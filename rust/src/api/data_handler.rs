@@ -110,17 +110,14 @@ impl DataHandler {
 
             byte_array.push(val); // Add the new value for the channel
 
-            // If the byte array is 10 elements long, take the average of all the data points and send it back to flutter
+            // If the byte array is 10 elements long, take the sum of all the data points and send it back to flutter
+            // Once in flutter the sum will be divided by 10 to get the average. This is done since stream sinks can only send
+            // i32 values.
             if byte_array.len() == 10 {
                 let sum: i32 = byte_array.iter().map(|&val| val as i32).sum::<i32>(); // Sum elements of the byte array
 
-                // Since the Stream sink can only send i32 values, here multiply the average by 100 to get the average to 2 decimal places
-                // When the data is received in flutter it will be divided by 10 before being plotted. Here sum is multiplied by 10 because
-                // 100 / 10 = 10
-                let avg: i32 = sum * 10;
-
                 // Calling the add method on the stream sink for this channel sends the data to flutter
-                self.stream_sinks[ind].add(avg).expect("Error streaming data"); //Implement better error handling
+                self.stream_sinks[ind].add(sum).expect("Error streaming data"); //Implement better error handling
 
                 byte_array.clear(); // Clear the byte array
             }
