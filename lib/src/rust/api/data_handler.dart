@@ -6,22 +6,33 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These functions are ignored because they are not marked as `pub`: `filter`, `save_data_csv`
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Box < dyn Error >>>
+abstract class BoxError implements RustOpaqueInterface {}
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DataHandler>>
 abstract class DataHandler implements RustOpaqueInterface {
-  Int32List get dataList;
+  Uint16List get dataList;
 
   bool get error;
 
-  set dataList(Int32List dataList);
+  set dataList(Uint16List dataList);
 
   set error(bool error);
 
   factory DataHandler(
-          {required int numChannels,
+          {required List<RustStreamSink<int>> streamSinks,
+          required int numChannels,
           required String dir,
           required String filename}) =>
       RustLib.instance.api.crateApiDataHandlerDataHandlerNew(
-          numChannels: numChannels, dir: dir, filename: filename);
+          streamSinks: streamSinks,
+          numChannels: numChannels,
+          dir: dir,
+          filename: filename);
 
   Future<void> process({required List<int> bytes});
+
+  Future<List<Uint16List>> readDataCsv();
 }
