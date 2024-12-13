@@ -88,7 +88,7 @@ impl DataHandler {
             writer.write_record(&record).expect("Error: Nothing to Write.");
 
         } else {
-            panic!("I will touch you, Josh");
+            panic!("Error. Writer not found.");
         }
 
         // Clear the data_list after Saving
