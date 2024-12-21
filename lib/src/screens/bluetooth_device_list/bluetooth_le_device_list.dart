@@ -62,55 +62,17 @@ class _BluetoothLEDeviceState extends State<BluetoothLEDevicePage> {
       appBar: AppBar(
         title: Text('Bluetooth Devices'),
       ),
-      // body: ListView.separated(
-      //   padding: const EdgeInsets.all(8),
-      //   itemCount: _results.length,
-      //   itemBuilder: (context, index) {
-      //     final res = _results[index];
-      //     return ListTile(
-      //       title: Text(res.device.platformName.isEmpty ? 'Unknown Device' : res.device.platformName),
-      //       subtitle: Text(res.device.remoteId.toString())
-      //     );
-      //   },
-      //   separatorBuilder: (BuildContext context, int index) => const Padding(padding: EdgeInsets.only(top: 23), child: Divider(),),
-      // )
       body: ListView(
-        padding: const EdgeInsets.all(8),
-        children: <Widget>[
-          SizedBox(
-            height: 50,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: const ListTile(title: Text('Bluetooth device 1'), subtitle: Text('Device id1'))
-            )
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 23),
-            child: Divider(),
-          ),
-          SizedBox(
-            height: 50,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: const ListTile(title: Text('Bluetooth device 2'), subtitle: Text('Device id3'))
-            )
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 23),
-            child: Divider(),
-          ),
-          SizedBox(
-            height: 50,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: const ListTile(title: Text('Bluetooth device 2'), subtitle: Text('Device id3'))
-            )
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 23),
-            child: Divider(),
-          ),
-        ]
+        children: [
+          if (_results.isEmpty)
+            const Center(child: Text("No devices found."))
+          else
+            for (var result in _results)
+              ListTile(
+                title: Text(result.device.platformName.isEmpty ? "Unknown Device" : result.device.platformName),
+                subtitle: Text(result.device.remoteId.toString()),
+              )
+        ],
       )
     );
   }
