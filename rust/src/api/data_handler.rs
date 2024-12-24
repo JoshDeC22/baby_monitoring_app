@@ -155,9 +155,8 @@ impl DataHandler {
                 // Reason: Throws an error if you borrow two different mutable references of self
                 let cloned_data = self.data_list.clone();
 
-                // Save (Write) it into the CSV File
-                self.filter(&cloned_data);
-                self.save_data_csv(&cloned_data).await;
+                self.filter(&cloned_data);   // Sends the data to the filter() function
+                self.save_data_csv(&cloned_data).await; // Saves (Writes) the data into the CSV File
 
                 self.data_list.clear(); // Clear the data_list after Saving
                 current_channel = 0;    // Restart Current Channel Counter
