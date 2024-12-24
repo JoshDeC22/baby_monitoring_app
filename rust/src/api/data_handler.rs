@@ -245,7 +245,7 @@ impl DataHandler {
         let current_time = Utc::now(); // Get the Current Time
 
         // If the program has been running for more than 24 hours
-        if current_time - Duration::seconds(5) > self.current_time {
+        if current_time - Duration::days(1) > self.current_time {
             // Create a new CSV File to store data
             match self.update_file() {
                 Ok(_) => {},
