@@ -47,7 +47,7 @@ impl DataHandler {
 
 
     /*  
-        This Function Takes in the pathway to the CSV File, the current day and the number of Channels being monitored
+        create_file() is a Static Function that takes in the pathway to the CSV File, the current day and the number of Channels being monitored
         - Creates a File Specified by the csv_path
             - panics if the filename given aready Exists!
         - Adds a Header in the CSV File with the Date and the Number of Channels.
@@ -100,7 +100,7 @@ impl DataHandler {
 
 
     /*  
-        This Function Takes in no Arguments.
+        update_file is a Function that takes in no Arguments.
         - Creates a File For the Next Day 
         - Updates the Values of the Current Instance. (Day and the Writer Object)
         - It Returns an Empty Result Object.
@@ -123,7 +123,7 @@ impl DataHandler {
 
 
     /*  
-        This Function Takes in a List of Bytes. 
+        process() is a Public, Asynchronous Function that takes in a List of Bytes. 
         - It Combines Every Two Byte into a u16 integer which corresponds to a DataPoint. 
         - Each DataPoint is then Saved (Written) into the CSV File.
         - The DataPoint is also Then Saved to byte_list where it is then sent to the filter function.
@@ -169,7 +169,7 @@ impl DataHandler {
 
     
     /*
-        This Function takes in data_list. data_list contains a processed Data Point for each channel
+        filter() is an Asynchronous Function that takes in data_list. data_list contains a processed Data Point for each channel
         - Adds each Data Point to its corresponding Channel Vector in the filter_matrix
         - When "each channel" has 10 elemets, sum them up
         - Send the sum of each channel to Flutter via its corresponding StreamSink
@@ -235,13 +235,14 @@ impl DataHandler {
     */
     
 
+
     /* 
-        This Function Takes in data, a list of u16 Integers (One for each Channel) which corresponds to the Channel Value
+        save_data_csv() is a Public, Asynchronous Function that takes in data, a list of u16 Integers (One for each Channel) which corresponds to the Channel Value
         - Gets the Time of when the Channel Value is Taken. 
         - If the Time is 24 hours after the Current File was made, it creates a new file (update_file Function)
         - Saves (Writes) the Time and the Channel Values on the Next Row of the CSV File
     */
-    async fn save_data_csv(&mut self, data: &Vec<u16>) {
+    pub async fn save_data_csv(&mut self, data: &Vec<u16>) {
         let current_time = Utc::now(); // Get the Current Time
 
         // If the program has been running for more than 24 hours
@@ -275,8 +276,7 @@ impl DataHandler {
 
 
     /*
-        // Should Probably be a Static Function
-        This Function Takes in the Pathway to CSV File
+        read_data_csv() is a Public, Static Function that takes in the Pathway to CSV File
         - Returns a Result Object Containing time_list and data_list
         - time_list is a Vector containing all the Time Points taken
         - data_list is a Vector containing a Vector of Channel Values for each Channel
@@ -287,17 +287,17 @@ impl DataHandler {
         data_list = [ [Channel 1 Values] , [Channel 2 Values] ]
                   = [ [ 13, 9, 5, 7, 8 ] , [ 3, 6, 11, 8, 1 ] ]
      */
-    pub fn read_data_csv(&mut self, file_directory: String) -> Result<(Vec<String>, Vec<Vec<u16>>), Box<dyn Error>> {
-        // Creates time_list. time_list stores all the time points refering to when each Channel Value was Collected
-        let mut time_list: Vec<String> = Vec::new();
-        // Creates data_list. data_list is a Vector containg a multiple Vectors of Channel Values. One for each Channel
-        let mut data_list: Vec<Vec<u16>> = vec![Vec::new(); self.num_channels as usize];
-        
+    pub fn read_data_csv(file_directory: String) -> Result<(Vec<String>, Vec<Vec<u16>>), Box<dyn Error>> {
         // Open the CSV File and create the Reader
         let file = File::open(file_directory)?;
         let mut reader = ReaderBuilder::new()
             .has_headers(true)
             .from_reader(file);
+
+        // Creates time_list. time_list stores all the time points refering to when each Channel Value was Collected
+        let mut time_list: Vec<String> = Vec::new();
+        // Creates data_list. data_list is a Vector containg a multiple Vectors of Channel Values. One for each Channel
+        let mut data_list: Vec<Vec<u16>> = vec![Vec::new(); reader.headers()?.len() - 1];
     
         // Loop through each Line in the CSV File
         for result in reader.records() {
