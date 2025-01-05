@@ -1,4 +1,3 @@
-
 // graph_item.dart
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -7,16 +6,12 @@ import 'data_model.dart';
 class GraphItem extends StatelessWidget {
   final int number;
   final String plotType;
+  final List<ChartData> data; 
 
-  const GraphItem({super.key, required this.number, required this.plotType});
+  const GraphItem({super.key, required this.number, required this.plotType, required this.data});
 
   @override
   Widget build(BuildContext context) {
-    final List<ChartData> data = [
-      ChartData(DateTime.now(), 4.5),
-      ChartData(DateTime.now().add(const Duration(minutes: 1)), 5.0),
-    ];
-
     final Color lineColor = (plotType == 'glucose') ? Colors.red : Colors.green;
 
     return Card(
@@ -32,21 +27,9 @@ class GraphItem extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                      appBar: AppBar(title: Text('Expanded Graph $number - $plotType')),
-                      body: Center(
-                        child: SfCartesianChart(
-                          primaryXAxis: DateTimeAxis(),
-                          series: <LineSeries<ChartData, DateTime>>[
-                            LineSeries<ChartData, DateTime>(
-                              dataSource: data,
-                              color: lineColor,
-                              xValueMapper: (ChartData data, _) => data.time,
-                              yValueMapper: (ChartData data, _) => data.value,
-                            ),
-                          ],
-                        ),
-                      ),
+                    builder: (context) => ExpandedGraphPage(
+                      data: data,
+                      plotType: plotType,
                     ),
                   ),
                 );
@@ -68,6 +51,36 @@ class GraphItem extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ExpandedGraphPage Class (added here)
+class ExpandedGraphPage extends StatelessWidget {
+  final List<ChartData> data;
+  final String plotType;
+
+  const ExpandedGraphPage({super.key, required this.data, required this.plotType});
+
+  @override
+  Widget build(BuildContext context) {
+    final Color lineColor = (plotType == 'glucose') ? Colors.red : Colors.green;
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Expanded Graph - $plotType')),
+      body: Center(
+        child: SfCartesianChart(
+          primaryXAxis: DateTimeAxis(),
+          series: <LineSeries<ChartData, DateTime>>[
+            LineSeries<ChartData, DateTime>(
+              dataSource: data,
+              color: lineColor,
+              xValueMapper: (ChartData data, _) => data.time,
+              yValueMapper: (ChartData data, _) => data.value,
+            ),
+          ],
+        ),
       ),
     );
   }
