@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:baby_monitoring_app/src/rust/api/simple.dart';
 import 'package:baby_monitoring_app/src/rust/frb_generated.dart';
+import 'package:baby_monitoring_app/screens/bluetooth_page.dart';
+import 'live_plot_page.dart'; 
 
 Future<void> main() async {
   try {
@@ -22,4 +23,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      in
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const BluetoothDevicePage(),
+        '/livePlot': (context) => const LivePlotPage(), 
+      },
+    );
+  }
+}

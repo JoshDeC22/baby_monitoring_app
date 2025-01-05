@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class BluetoothDevicePage extends StatelessWidget {
+  const BluetoothDevicePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,16 +15,22 @@ class BluetoothDevicePage extends StatelessWidget {
 }
 
 class BluetoothDeviceList extends StatefulWidget {
+  const BluetoothDeviceList({super.key});
+
   @override
   _BluetoothDeviceListState createState() => _BluetoothDeviceListState();
 }
 
 class _BluetoothDeviceListState extends State<BluetoothDeviceList> {
-  List<String> availableDevices = [];
-  void scanforDevices() = async {
-    availableDevices = await BluetoothService.scan();
-  }
-  List<String> availableDevices = ["Device A", "Device B", "Device C"];
+List<String> availableDevices = ["Device A", "Device B", "Device C"]; // Keep one declaration only
+
+Future<void> scanForDevices() async {
+  // Example of scanning (replace with your Bluetooth logic)
+  setState(() {
+    availableDevices = ["Device X", "Device Y", "Device Z"]; 
+  });
+}
+
   String? selectedDevice;
 
   Future<bool> connectToDevice(String deviceName) async {
