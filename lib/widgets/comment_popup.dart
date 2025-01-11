@@ -1,16 +1,16 @@
-import 'package:baby_monitoring_app/utils/annotation_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class CommentPopup extends StatefulWidget {
   final DateTime time;
   final int bitVal;
+  final ValueNotifier<List<CartesianChartAnnotation>> annotations;
 
   const CommentPopup({
     super.key,
     required this.time,
     required this.bitVal,
+    required this.annotations,
   });
 
   @override
@@ -64,13 +64,12 @@ class CommentPopupState extends State<CommentPopup> {
                             comment,
                           ),
                         ),
-                        coordinateUnit: CoordinateUnit.logicalPixel,
-                        x: widget,
+                        coordinateUnit: CoordinateUnit.point,
+                        x: widget.time,
                         y: widget.bitVal,
                       );
-                      Provider.of<AnnotationProvider>(context, listen: false).addAnnotation(annotation);
-                      _saveCommentData(comment, widget.time); // Replace with rust function
-                      Navigator.of(context).pop();
+                      widget.annotations.value = [...widget.annotations.value, annotation];
+                      Navigator.pop(context);
                     }
                   }, 
                   child: const Text("Save"),
