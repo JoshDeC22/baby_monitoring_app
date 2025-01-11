@@ -25,6 +25,8 @@
 
 // Section: imports
 
+use std::error::Error;
+
 use crate::api::data_handler::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
@@ -271,7 +273,7 @@ fn wire__crate__api__data_handler__DataHandler_new_impl(
             transform_result_sse::<_, ()>((move || {
                 let output_ok = Result::<_, ()>::Ok(crate::api::data_handler::DataHandler::new(
                     api_stream_sinks,
-                    api_num_channels,
+                    api_num_channels.try_into().unwrap(),
                     api_dir,
                     api_filename,
                 ))?;

@@ -13,7 +13,7 @@ use crate::frb_generated::StreamSink;
 #[frb(opaque)]
 pub struct DataHandler {
     #[frb(name = "dataList")]
-    stream_sinks: Vec<StreamSink<u16>>,
+    stream_sinks: Vec<StreamSink<i32>>,
     csv_path: String,
     writer: Option<Writer<File>>,
     num_channels: u8,
