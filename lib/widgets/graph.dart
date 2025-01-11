@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../utils/annotation_provider.dart';
 import 'package:provider/provider.dart';
+import 'comment_popup.dart';
 
 class GraphWidget extends StatefulWidget {
   final int number;
@@ -20,7 +21,7 @@ class GraphWidget extends StatefulWidget {
   });
 
     @override
-    _GraphWidgetState createState() => _GraphWidgetState();
+    GraphWidgetState createState() => GraphWidgetState();
 }
 
 class GraphWidgetState extends State<GraphWidget> {
@@ -48,13 +49,14 @@ class GraphWidgetState extends State<GraphWidget> {
       title: const AxisTitle(text: 'Time of Day'),
       enableAutoIntervalOnZooming: true,
       edgeLabelPlacement: EdgeLabelPlacement.shift, //prevents time labels at edges from being cut off
-      initialVisibleMinimum: widget.data.last.time.subtract(Duration(minutes: 5)), // Intially show post recent 5 minutes of data
+      initialVisibleMinimum: widget.data.last.time.subtract(const Duration(minutes: 5)), // Intially show post recent 5 minutes of data
       initialVisibleMaximum: widget.data.last.time, 
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final annotations = Provider.of<AnnotationProvider>(context).annotationList;
 
     return Card(
       elevation: 4,
@@ -89,9 +91,9 @@ class GraphWidgetState extends State<GraphWidget> {
 
                 final x = details.localPosition.dx;
 
-                final _dataPoint = _getDataPointFromX(x, widgetWidth);
+                final dataPoint = _getDataPointFromX(x, widgetWidth);
 
-                //_showCommentPopup(context, dataPoint);
+                _showCommentPopup(context, dataPoint);
               },
               child: SfCartesianChart(
                 legend: const Legend(isVisible: true),
@@ -117,14 +119,14 @@ class GraphWidgetState extends State<GraphWidget> {
     );
   }
 
-  // void _showCommentPopup(BuildContext context, ChartData dataPoint) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return CommentPopup(time: dataPoint.time, bitVal: dataPoint.bitVal);
-  //     },
-  //   );
-  // }
+  void _showCommentPopup(BuildContext context, ChartData dataPoint) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CommentPopup(time: dataPoint.time, bitVal: dataPoint.bitVal);
+      },
+    );
+  }
 
   ChartData _getDataPointFromX(double x, double width) {
     final xMin = _xAxis.minimum!; // Error handle
