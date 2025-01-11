@@ -6,9 +6,13 @@ import 'data_model.dart';
 class GraphItem extends StatelessWidget {
   final int number;
   final String plotType;
-  final List<ChartData> data; 
+  final List<ChartData> data;
 
-  const GraphItem({super.key, required this.number, required this.plotType, required this.data});
+  const GraphItem(
+      {super.key,
+      required this.number,
+      required this.plotType,
+      required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +65,8 @@ class ExpandedGraphPage extends StatelessWidget {
   final List<ChartData> data;
   final String plotType;
 
-  const ExpandedGraphPage({super.key, required this.data, required this.plotType});
+  const ExpandedGraphPage(
+      {super.key, required this.data, required this.plotType});
 
   @override
   Widget build(BuildContext context) {
