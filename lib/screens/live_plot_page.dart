@@ -11,6 +11,8 @@ class LivePlotPage extends StatelessWidget {
     final List<ChartData> glucoseData = [
       ChartData(DateTime.now(), 4),
       ChartData(DateTime.now().add(const Duration(minutes: 1)), 5),
+      ChartData(DateTime.now(), 4),
+      ChartData(DateTime.now().add(const Duration(minutes: 1)), 5),
     ];
     final List<ChartData> lactateData = [
       ChartData(DateTime.now(), 1),
