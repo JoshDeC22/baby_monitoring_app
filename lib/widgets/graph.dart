@@ -1,24 +1,24 @@
-import 'package:baby_monitoring_app/widgets/comment_popup.dart';
+//import 'package:baby_monitoring_app/widgets/comment_popup.dart';
 import 'package:baby_monitoring_app/widgets/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class GraphWidget extends StatefulWidget {
-    final int number;
-    final List<ChartData> data;
-    final String paramName;
-    final Color lineColor;
+  final int number;
+  final List<ChartData> data;
+  final String paramName;
+  final Color lineColor;
 
-    const GraphWidget({
-        super.key,
-        required this.number,
-        required this.data,
-        required this.paramName,
-        required this.lineColor,
-    });
+  const GraphWidget({
+    super.key,
+    required this.number,
+    required this.data,
+    required this.paramName,
+    required this.lineColor,
+  });
 
-    @override
-    _GraphWidgetState createState() => _GraphWidgetState();
+  @override
+  _GraphWidgetState createState() => _GraphWidgetState();
 }
 
 class _GraphWidgetState extends State<GraphWidget> {
@@ -35,25 +35,26 @@ class _GraphWidgetState extends State<GraphWidget> {
 
     // Initialize ZoomPanBehavior
     _zoomPanBehavior = ZoomPanBehavior(
-        enablePinching: true, // Enable pinching to zoom
-        enableDoubleTapZooming: true, // Enable double-tap zooming
-        enablePanning: true, // Enable scrolling
-        enableSelectionZooming: true,
-        zoomMode: ZoomMode.x, // Allow horizontal scrolling only
+      enablePinching: true, // Enable pinching to zoom
+      enableDoubleTapZooming: true, // Enable double-tap zooming
+      enablePanning: true, // Enable scrolling
+      enableSelectionZooming: true,
+      zoomMode: ZoomMode.x, // Allow horizontal scrolling only
     );
 
     _xAxis = DateTimeAxis(
       title: const AxisTitle(text: 'Time of Day'),
       enableAutoIntervalOnZooming: true,
-      edgeLabelPlacement: EdgeLabelPlacement.shift, //prevents time labels at edges from being cut off
-      initialVisibleMinimum: widget.data.last.time.subtract(Duration(minutes: 5)), // Intially show post recent 5 minutes of data
-      initialVisibleMaximum: widget.data.last.time, 
+      edgeLabelPlacement: EdgeLabelPlacement
+          .shift, //prevents time labels at edges from being cut off
+      initialVisibleMinimum: widget.data.last.time.subtract(
+          Duration(minutes: 5)), // Intially show post recent 5 minutes of data
+      initialVisibleMaximum: widget.data.last.time,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
       elevation: 4,
       margin: const EdgeInsets.all(8.0),
@@ -87,14 +88,15 @@ class _GraphWidgetState extends State<GraphWidget> {
 
                 final x = details.localPosition.dx;
 
-                final dataPoint = _getDataPointFromX(x, widgetWidth);
+                final _dataPoint = _getDataPointFromX(x, widgetWidth);
 
-                _showCommentPopup(context, dataPoint);
+                //_showCommentPopup(context, dataPoint);
               },
               child: SfCartesianChart(
                 legend: const Legend(isVisible: true),
                 tooltipBehavior: _tooltipBehavior, //enabling tooltips
-                zoomPanBehavior: _zoomPanBehavior, //enabling zooming and panning
+                zoomPanBehavior:
+                    _zoomPanBehavior, //enabling zooming and panning
                 primaryXAxis: _xAxis,
                 series: <LineSeries<ChartData, DateTime>>[
                   LineSeries<ChartData, DateTime>(
@@ -113,14 +115,14 @@ class _GraphWidgetState extends State<GraphWidget> {
     );
   }
 
-  void _showCommentPopup(BuildContext context, ChartData dataPoint) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return CommentPopup(time: dataPoint.time, bitVal: dataPoint.bitVal);
-      },
-    );
-  }
+  // void _showCommentPopup(BuildContext context, ChartData dataPoint) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return CommentPopup(time: dataPoint.time, bitVal: dataPoint.bitVal);
+  //     },
+  //   );
+  // }
 
   ChartData _getDataPointFromX(double x, double width) {
     final xMin = _xAxis.minimum!; // Error handle
@@ -203,8 +205,10 @@ class _ExpandedGraphPageState extends State<ExpandedGraphPage> {
           primaryXAxis: DateTimeAxis(
             title: const AxisTitle(text: 'Time of Day'),
             enableAutoIntervalOnZooming: true,
-            edgeLabelPlacement: EdgeLabelPlacement.shift, //prevents time labels at edges from being cut off
-            initialVisibleMinimum: widget.data.last.time.subtract(Duration(minutes: 5)), // Intially show post recent 5 minutes of data
+            edgeLabelPlacement: EdgeLabelPlacement
+                .shift, //prevents time labels at edges from being cut off
+            initialVisibleMinimum: widget.data.last.time.subtract(Duration(
+                minutes: 5)), // Intially show post recent 5 minutes of data
             initialVisibleMaximum: widget.data.last.time,
           ),
           series: <LineSeries<ChartData, DateTime>>[

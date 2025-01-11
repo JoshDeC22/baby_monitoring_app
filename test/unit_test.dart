@@ -9,22 +9,23 @@ main() {
     expect(expectedNumber, 1);
   });
 
-  group("WidgetTest", () {
-    // Testing if Fullscreen Works
-    testWidgets("Expanded Graph Test", (WidgetTester tester) async {
-      // Dummy Data
-      final List<ChartData> glucoseData = [
-        ChartData(DateTime.now(), 4.5),
-        ChartData(DateTime.now().add(const Duration(minutes: 1)), 5.0),
-      ];
+  // Dummy Data
+  final List<ChartData> dummyData = [
+    ChartData(DateTime.now(), 4),
+    ChartData(DateTime.now().add(const Duration(minutes: 1)), 5),
+  ];
 
+  group("WidgetTest", () {
+    // Fullscreen Test
+    testWidgets("Graph Should be Able to Fullscreen",
+        (WidgetTester tester) async {
       // Create a Test GraphItem Widget
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: GraphItem(
               number: 1,
-              data: glucoseData,
+              data: dummyData,
               plotType: 'glucose',
             ),
           ),
@@ -37,6 +38,30 @@ main() {
 
       // Checks if Expanded Graph Appears
       expect(find.byType(ExpandedGraphPage), findsOneWidget);
+    });
+
+    // Scrolling Test
+    testWidgets("Graph Should be Able to Fullscreen",
+        (WidgetTester tester) async {
+      // Create a Test GraphItem Widget
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GraphItem(
+              number: 2,
+              data: dummyData,
+              plotType: 'lactate',
+            ),
+          ),
+        ),
+      );
+
+      // Scroll Left
+      await tester.drag(find.byType(GraphItem), const Offset(-300, 0));
+      await tester.pump();
+
+      // Checks if Scrolled
+      //expect();
     });
   });
 }

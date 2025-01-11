@@ -9,20 +9,24 @@ class LivePlotPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<ChartData> glucoseData = [
-      ChartData(DateTime.now(), 4.5),
-      ChartData(DateTime.now().add(const Duration(minutes: 1)), 5.0),
+      ChartData(DateTime.now(), 4),
+      ChartData(DateTime.now().add(const Duration(minutes: 1)), 5),
     ];
     final List<ChartData> lactateData = [
-      ChartData(DateTime.now(), 1.2),
-      ChartData(DateTime.now().add(const Duration(minutes: 1)), 1.4),
+      ChartData(DateTime.now(), 1),
+      ChartData(DateTime.now().add(const Duration(minutes: 1)), 2),
     ];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Live Data Plot')),
       body: Column(
         children: [
-          Expanded(child: GraphItem(number: 1, plotType: 'glucose', data: glucoseData)),
-          Expanded(child: GraphItem(number: 2, plotType: 'lactate', data: lactateData)),
+          Expanded(
+              child:
+                  GraphItem(number: 1, plotType: 'glucose', data: glucoseData)),
+          Expanded(
+              child:
+                  GraphItem(number: 2, plotType: 'lactate', data: lactateData)),
         ],
       ),
     );
