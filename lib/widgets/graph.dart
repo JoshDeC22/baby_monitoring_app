@@ -2,6 +2,8 @@ import 'package:baby_monitoring_app/widgets/comment_popup.dart';
 import 'package:baby_monitoring_app/widgets/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import '../utils/annotation_provider.dart';
+import 'package:provider/provider.dart';
 
 class GraphWidget extends StatefulWidget {
     final int number;
@@ -18,10 +20,10 @@ class GraphWidget extends StatefulWidget {
     });
 
     @override
-    _GraphWidgetState createState() => _GraphWidgetState();
+    GraphWidgetState createState() => GraphWidgetState();
 }
 
-class _GraphWidgetState extends State<GraphWidget> {
+class GraphWidgetState extends State<GraphWidget> {
   late ZoomPanBehavior _zoomPanBehavior;
   late TooltipBehavior _tooltipBehavior;
   late DateTimeAxis _xAxis;
@@ -46,13 +48,14 @@ class _GraphWidgetState extends State<GraphWidget> {
       title: const AxisTitle(text: 'Time of Day'),
       enableAutoIntervalOnZooming: true,
       edgeLabelPlacement: EdgeLabelPlacement.shift, //prevents time labels at edges from being cut off
-      initialVisibleMinimum: widget.data.last.time.subtract(Duration(minutes: 5)), // Intially show post recent 5 minutes of data
+      initialVisibleMinimum: widget.data.last.time.subtract(const Duration(minutes: 5)), // Intially show post recent 5 minutes of data
       initialVisibleMaximum: widget.data.last.time, 
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final annotations = Provider.of<AnnotationProvider>(context).annotationList;
 
     return Card(
       elevation: 4,
@@ -105,6 +108,7 @@ class _GraphWidgetState extends State<GraphWidget> {
                     yValueMapper: (ChartData data, _) => data.bitVal,
                   ),
                 ],
+                annotations: annotations,
               ),
             ),
           ),
@@ -168,10 +172,10 @@ class ExpandedGraphPage extends StatefulWidget {
   });
 
   @override
-  _ExpandedGraphPageState createState() => _ExpandedGraphPageState();
+  ExpandedGraphPageState createState() => ExpandedGraphPageState();
 }
 
-class _ExpandedGraphPageState extends State<ExpandedGraphPage> {
+class ExpandedGraphPageState extends State<ExpandedGraphPage> {
   late ZoomPanBehavior _zoomPanBehavior;
   late TooltipBehavior _tooltipBehavior;
 
@@ -204,7 +208,7 @@ class _ExpandedGraphPageState extends State<ExpandedGraphPage> {
             title: const AxisTitle(text: 'Time of Day'),
             enableAutoIntervalOnZooming: true,
             edgeLabelPlacement: EdgeLabelPlacement.shift, //prevents time labels at edges from being cut off
-            initialVisibleMinimum: widget.data.last.time.subtract(Duration(minutes: 5)), // Intially show post recent 5 minutes of data
+            initialVisibleMinimum: widget.data.last.time.subtract(const Duration(minutes: 5)), // Intially show post recent 5 minutes of data
             initialVisibleMaximum: widget.data.last.time,
           ),
           series: <LineSeries<ChartData, DateTime>>[
