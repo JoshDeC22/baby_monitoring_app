@@ -1,6 +1,6 @@
 // data_model.dart
 class ChartData {
   final DateTime time;
-  final double value;
-  ChartData(this.time, this.value);
+  final int bitVal;
+  ChartData(this.time, this.bitVal);
 }
