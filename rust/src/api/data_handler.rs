@@ -21,7 +21,7 @@ pub struct DataHandler {
     day: u8,
     
     filter_matrix: Vec<Vec<u16>>,
-    data_list: Vec<u16>,
+    pub data_list: Vec<u16>,
     pub error: bool
 }
 
