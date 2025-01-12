@@ -37,7 +37,7 @@ class GraphWidgetState extends State<GraphWidget> {
   late RustStreamSink<int>?
       dataStream; // if the plot is live this is the data source
   late DateTimeAxisController
-      _axisController; // controller to retrieve information about the x axis
+      axisController; // controller to retrieve information about the x axis
   // This value notifier allows for the chart to dynamically update when annotations are added
   final ValueNotifier<List<CartesianChartAnnotation>> annotations =
       ValueNotifier<List<CartesianChartAnnotation>>([]);
@@ -70,7 +70,7 @@ class GraphWidgetState extends State<GraphWidget> {
           widget.data.last.time, // Initially show the last data point
       // initialize the controller for this axis
       onRendererCreated: (DateTimeAxisController controller) {
-        _axisController = controller;
+        axisController = controller;
       },
     );
 
@@ -135,7 +135,7 @@ class GraphWidgetState extends State<GraphWidget> {
                     final dataPoint = _getDataPointFromX(
                         x,
                         widgetWidth,
-                        _axisController,
+                        axisController,
                         widget.data); // get the closest data point to the click
 
                     _showCommentPopup(context, dataPoint,

@@ -7,7 +7,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 main() {
   // Dummy Data
-  DateTime dummyTime = DateTime.parse('2025-01-01 11:00:00Z'); // Year/Month/Day
+  DateTime dummyTime = DateTime.parse('2025-01-01 11:00:00'); // Year/Month/Day
   final List<ChartData> dummyData = [
     ChartData(dummyTime, 4),
     ChartData(dummyTime.add(const Duration(minutes: 1)), 5),
@@ -35,8 +35,7 @@ main() {
                 data: dummyData,
                 paramName: 'glucose',
                 lineColor: Colors.green,
-                plotType: 's'
-                ),
+                plotType: 's'),
           ),
         ),
       );
@@ -67,58 +66,102 @@ main() {
         ),
       );
 
-      // Scroll Left
-      await tester.drag(find.byType(SfCartesianChart), const Offset(-1000, 0));
+      // Wait for the Chart to Properly Initiallize
       await tester.pumpAndSettle();
 
-      // Check if the x-axis visible minimum and maximum values have changed after scrolling.
+      // Get the AxisController for the Chart
       final graphWidgetState =
-          tester.state(find.byType(GraphWidget)) as GraphWidget;
+          tester.state(find.byType(GraphWidget)) as GraphWidgetState;
+      final axisController = graphWidgetState.axisController;
 
-      // final currentMin = graphWidgetState._xAxis.initialVisibleMinimum;
-      // final currentMax = graphWidgetState._xAxis.initialVisibleMaximum;
+      // The Maximum Time on the Axis should be the latest Time Point Entry
+      expect(axisController.visibleMaximum,
+          dummyTime.add(const Duration(hours: 1)));
 
-      // expect(currentMin, 0);
-      // expect(currentMax, 0);
+      // Scoll Left
+      await tester.fling(
+          find.byType(SfCartesianChart), const Offset(200, 0), 100);
+      await tester.pumpAndSettle();
+
+      // Expects the Maximum Time is less than 12:00
+      expect(
+          axisController.visibleMaximum
+              ?.isBefore(dummyTime.add(const Duration(hours: 1))),
+          isTrue);
     });
 
-    /*
     // Zooming Test
-    testWidgets("Graph Should be Able to Zoom in and out", (WidgetTester tester) async {
+    testWidgets("Graph Should be Able to Zoom in and out",
+        (WidgetTester tester) async {
       // Create a Test GraphItem Widget
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: GraphWidget(
-              number: 1,
-              data: dummyData,
-              paramName: 'glucose',
-              lineColor: Colors.green
-            ),
+                number: 1,
+                data: dummyData,
+                paramName: 'glucose',
+                lineColor: Colors.green,
+                plotType: 's'),
           ),
         ),
       );
 
-      // Wait for the Chart to Properly Initiallize and Find the Coordinates of the Chart
+      // Wait for the Chart to Properly Initiallize
       await tester.pumpAndSettle();
-      final chart = find.byType(SfCartesianChart);
-      final center = tester.getCenter(chart);
+
+      // Get the AxisController for the Chart
+      final graphWidgetState =
+          tester.state(find.byType(GraphWidget)) as GraphWidgetState;
+      final axisController = graphWidgetState.axisController;
+
+      // Get initial minimum and maximum axis values
+      DateTime initialMinimumVisible =
+          axisController.visibleMinimum as DateTime;
+      DateTime initialMaximumVisible =
+          axisController.visibleMaximum as DateTime;
+
+      // Initial Zoom should be 5 Minutes
+      expect(initialMaximumVisible.difference(initialMinimumVisible),
+          const Duration(minutes: 5));
+
+      // Get the center of the chart
+      final Offset center = tester.getCenter(find.byType(SfCartesianChart));
+
+      // Create Two Gesture Objects
+      final touch1 = await tester.startGesture(center.translate(-10, 0));
+      final touch2 = await tester.startGesture(center.translate(10, 0));
 
       // Zoom In
-      await tester.flingFrom(Offset(center.dx - 50, center.dy), Offset(center.dx - 200, center.dy), 500);
-      await tester.flingFrom(Offset(center.dx + 50, center.dy), Offset(center.dx + 200, center.dy), 500);
-  
-      // Check Visible Axis
-      //expect(widget, findsNothing);
+      await touch1.moveBy(const Offset(-15, 0));
+      await touch2.moveBy(const Offset(15, 0));
+      await tester.pumpAndSettle();
+      
+      // Get Current Visible Axis
+      DateTime currVisibleMaximum = axisController.visibleMaximum as DateTime;
+      DateTime currVisibleMinimum = axisController.visibleMinimum as DateTime;
+      Duration zoom = currVisibleMaximum.difference(currVisibleMinimum);
+
+      // Current Zoom should be less than 5 minutes
+      expect(zoom, lessThan(const Duration(minutes: 5)));
 
       // Zoom Out
-      await tester.flingFrom(Offset(center.dx - 200, center.dy), Offset(center.dx - 50, center.dy), 500);
-      await tester.flingFrom(Offset(center.dx + 200, center.dy), Offset(center.dx + 50, center.dy), 500);
+      await touch1.moveBy(const Offset(15, 0));
+      await touch2.moveBy(const Offset(-15, 0));
+      await tester.pumpAndSettle();
 
-      // Check Visible Axis
-      //expect(widget, findsNothing);
+      // Get Current Visible Axis
+      currVisibleMaximum = axisController.visibleMaximum as DateTime;
+      currVisibleMinimum = axisController.visibleMinimum as DateTime;
+      
+      // Current Zoom Should be bigger once Zoomed Out
+      expect(currVisibleMaximum.difference(currVisibleMinimum), greaterThan(zoom));
+
+      // End Gestures
+      await touch1.cancel();
+      await touch2.cancel();
+
     });
-    */
 
     // Comment Test
     testWidgets("Graph Should be Able to be Commented",
