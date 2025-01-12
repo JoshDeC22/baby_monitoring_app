@@ -34,7 +34,9 @@ main() {
                 number: 1,
                 data: dummyData,
                 paramName: 'glucose',
-                lineColor: Colors.green),
+                lineColor: Colors.green,
+                plotType: 's'
+                ),
           ),
         ),
       );
@@ -59,7 +61,8 @@ main() {
                 number: 1,
                 data: dummyData,
                 paramName: 'glucose',
-                lineColor: Colors.green),
+                lineColor: Colors.green,
+                plotType: 's'),
           ),
         ),
       );
@@ -128,7 +131,8 @@ main() {
                 number: 1,
                 data: dummyData,
                 paramName: 'lactate',
-                lineColor: Colors.red),
+                lineColor: Colors.red,
+                plotType: 's'),
           ),
         ),
       );
