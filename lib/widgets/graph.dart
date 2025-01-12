@@ -56,13 +56,14 @@ class GraphWidgetState extends State<GraphWidget> {
 
   @override
   Widget build(BuildContext context) {
+    String title = '${widget.number}. Blood ${widget.paramName[0].toUpperCase()}${widget.paramName.substring(1)} Levels';
     return Card(
       elevation: 4,
       margin: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           ListTile(
-            title: Text('Graph ${widget.number} - ${widget.paramName}'),
+            title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             trailing: IconButton(
               icon: const Icon(Icons.fullscreen),
               onPressed: () {
@@ -84,7 +85,7 @@ class GraphWidgetState extends State<GraphWidget> {
             valueListenable: annotations, 
             builder: (BuildContext context, List<CartesianChartAnnotation> annotationList, Widget? child) {
               return SizedBox(
-                height: 200,
+                height: 270,
                 child: GestureDetector(
                   onDoubleTapDown: (details) {
                     final RenderBox box = context.findRenderObject() as RenderBox;
@@ -98,14 +99,22 @@ class GraphWidgetState extends State<GraphWidget> {
                     _showCommentPopup(context, dataPoint, annotations);
                   },
                   child: SfCartesianChart(
-                    legend: const Legend(isVisible: true),
+                    legend: const Legend(
+                      isVisible: true,
+                      position: LegendPosition.auto, 
+                      alignment: ChartAlignment.far,
+                      offset: Offset(0, 0),
+                      overflowMode: LegendItemOverflowMode.wrap 
+  ),
                     tooltipBehavior: _tooltipBehavior, //enabling tooltips
                     zoomPanBehavior:
                         _zoomPanBehavior, //enabling zooming and panning
                     primaryXAxis: _xAxis,
+                    primaryYAxis: const NumericAxis(title: AxisTitle(text: 'Concentration (mmol/L)')),
                     series: <LineSeries<ChartData, DateTime>>[
                       LineSeries<ChartData, DateTime>(
                         dataSource: widget.data,
+                        name: widget.paramName,
                         color: widget.lineColor,
                         enableTooltip: true,
                         xValueMapper: (ChartData data, _) => data.time,
