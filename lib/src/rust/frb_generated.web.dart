@@ -76,7 +76,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<RustStreamSink<int>> dco_decode_list_StreamSink_i_32_Sse(dynamic raw);
 
   @protected
+  List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
   List<Uint16List> dco_decode_list_list_prim_u_16_strict(dynamic raw);
+
+  @protected
+  List<int> dco_decode_list_prim_u_16_loose(dynamic raw);
 
   @protected
   Uint16List dco_decode_list_prim_u_16_strict(dynamic raw);
@@ -88,10 +94,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  int dco_decode_u_16(dynamic raw);
+  (List<String>, List<Uint16List>)
+      dco_decode_record_list_string_list_list_prim_u_16_strict(dynamic raw);
 
   @protected
-  int dco_decode_u_32(dynamic raw);
+  int dco_decode_u_16(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -153,8 +160,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
   List<Uint16List> sse_decode_list_list_prim_u_16_strict(
       SseDeserializer deserializer);
+
+  @protected
+  List<int> sse_decode_list_prim_u_16_loose(SseDeserializer deserializer);
 
   @protected
   Uint16List sse_decode_list_prim_u_16_strict(SseDeserializer deserializer);
@@ -166,10 +179,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  int sse_decode_u_16(SseDeserializer deserializer);
+  (List<String>, List<Uint16List>)
+      sse_decode_record_list_string_list_list_prim_u_16_strict(
+          SseDeserializer deserializer);
 
   @protected
-  int sse_decode_u_32(SseDeserializer deserializer);
+  int sse_decode_u_16(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -232,8 +247,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<RustStreamSink<int>> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_list_prim_u_16_strict(
       List<Uint16List> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_prim_u_16_loose(
+      List<int> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_16_strict(
@@ -247,10 +269,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
-  void sse_encode_u_16(int self, SseSerializer serializer);
+  void sse_encode_record_list_string_list_list_prim_u_16_strict(
+      (List<String>, List<Uint16List>) self, SseSerializer serializer);
 
   @protected
-  void sse_encode_u_32(int self, SseSerializer serializer);
+  void sse_encode_u_16(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);

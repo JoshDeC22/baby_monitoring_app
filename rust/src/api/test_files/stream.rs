@@ -16,6 +16,8 @@ pub struct DataHandler {
 impl DataHandler {
     #[frb(sync)]
     pub fn new(sink: Vec<StreamSink<i32>>, dir: String, filename: String) -> Self {
+        let sink: Vec<u16> = Vec::with_capacity(num_channels as usize);
+        
         let csv_path: String = dir + "\\" + filename.as_str() + ".csv";
         if !Path::new(&csv_path).exists() {
             match File::create(&csv_path) {
@@ -39,6 +41,7 @@ impl DataHandler {
     pub async fn tick(&mut self) -> Result<()> {
         let mut ticks1: i32 = rand::random::<i32>();
         let mut ticks2: i32 = rand::random::<i32>();
+        
         let mut count: i32 = 0;
         let dur: Duration = Duration::from_secs_f32(0.1);
         loop {

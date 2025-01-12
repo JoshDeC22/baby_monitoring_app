@@ -68,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.6.0';
 
   @override
-  int get rustContentHash => 1266387366;
+  int get rustContentHash => 1376645912;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -100,8 +100,12 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiDataHandlerDataHandlerProcess(
       {required DataHandler that, required List<int> bytes});
 
-  Future<List<Uint16List>> crateApiDataHandlerDataHandlerReadDataCsv(
-      {required DataHandler that});
+  Future<(List<String>, List<Uint16List>)>
+      crateApiDataHandlerDataHandlerReadDataCsv(
+          {required String fileDirectory});
+
+  Future<void> crateApiDataHandlerDataHandlerSaveDataCsv(
+      {required DataHandler that, required List<int> data});
 
   Future<void> crateApiInitInitApp();
 
@@ -252,7 +256,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_StreamSink_i_32_Sse(streamSinks, serializer);
-        sse_encode_u_32(numChannels, serializer);
+        sse_encode_u_8(numChannels, serializer);
         sse_encode_String(dir, serializer);
         sse_encode_String(filename, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
@@ -303,23 +307,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<List<Uint16List>> crateApiDataHandlerDataHandlerReadDataCsv(
-      {required DataHandler that}) {
+  Future<(List<String>, List<Uint16List>)>
+      crateApiDataHandlerDataHandlerReadDataCsv(
+          {required String fileDirectory}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDataHandler(
-            that, serializer);
+        sse_encode_String(fileDirectory, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 7, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_list_list_prim_u_16_strict,
+        decodeSuccessData:
+            sse_decode_record_list_string_list_list_prim_u_16_strict,
         decodeErrorData:
             sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError,
       ),
       constMeta: kCrateApiDataHandlerDataHandlerReadDataCsvConstMeta,
-      argValues: [that],
+      argValues: [fileDirectory],
       apiImpl: this,
     ));
   }
@@ -327,7 +332,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiDataHandlerDataHandlerReadDataCsvConstMeta =>
       const TaskConstMeta(
         debugName: "DataHandler_read_data_csv",
-        argNames: ["that"],
+        argNames: ["fileDirectory"],
+      );
+
+  @override
+  Future<void> crateApiDataHandlerDataHandlerSaveDataCsv(
+      {required DataHandler that, required List<int> data}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDataHandler(
+            that, serializer);
+        sse_encode_list_prim_u_16_loose(data, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiDataHandlerDataHandlerSaveDataCsvConstMeta,
+      argValues: [that, data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiDataHandlerDataHandlerSaveDataCsvConstMeta =>
+      const TaskConstMeta(
+        debugName: "DataHandler_save_data_csv",
+        argNames: ["that", "data"],
       );
 
   @override
@@ -336,7 +369,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 9, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -454,11 +487,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
+  }
+
+  @protected
   List<Uint16List> dco_decode_list_list_prim_u_16_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>)
         .map(dco_decode_list_prim_u_16_strict)
         .toList();
+  }
+
+  @protected
+  List<int> dco_decode_list_prim_u_16_loose(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as List<int>;
   }
 
   @protected
@@ -480,13 +525,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int dco_decode_u_16(dynamic raw) {
+  (List<String>, List<Uint16List>)
+      dco_decode_record_list_string_list_list_prim_u_16_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as int;
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_list_String(arr[0]),
+      dco_decode_list_list_prim_u_16_strict(arr[1]),
+    );
   }
 
   @protected
-  int dco_decode_u_32(dynamic raw) {
+  int dco_decode_u_16(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
   }
@@ -610,6 +663,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<Uint16List> sse_decode_list_list_prim_u_16_strict(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -620,6 +685,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ans_.add(sse_decode_list_prim_u_16_strict(deserializer));
     }
     return ans_;
+  }
+
+  @protected
+  List<int> sse_decode_list_prim_u_16_loose(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint16List(len_);
   }
 
   @protected
@@ -644,15 +716,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int sse_decode_u_16(SseDeserializer deserializer) {
+  (List<String>, List<Uint16List>)
+      sse_decode_record_list_string_list_list_prim_u_16_strict(
+          SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint16();
+    var var_field0 = sse_decode_list_String(deserializer);
+    var var_field1 = sse_decode_list_list_prim_u_16_strict(deserializer);
+    return (var_field0, var_field1);
   }
 
   @protected
-  int sse_decode_u_32(SseDeserializer deserializer) {
+  int sse_decode_u_16(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint32();
+    return deserializer.buffer.getUint16();
   }
 
   @protected
@@ -777,6 +853,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_list_prim_u_16_strict(
       List<Uint16List> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -784,6 +869,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     for (final item in self) {
       sse_encode_list_prim_u_16_strict(item, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_list_prim_u_16_loose(
+      List<int> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer
+        .putUint16List(self is Uint16List ? self : Uint16List.fromList(self));
   }
 
   @protected
@@ -812,15 +906,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_u_16(int self, SseSerializer serializer) {
+  void sse_encode_record_list_string_list_list_prim_u_16_strict(
+      (List<String>, List<Uint16List>) self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint16(self);
+    sse_encode_list_String(self.$1, serializer);
+    sse_encode_list_list_prim_u_16_strict(self.$2, serializer);
   }
 
   @protected
-  void sse_encode_u_32(int self, SseSerializer serializer) {
+  void sse_encode_u_16(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint32(self);
+    serializer.buffer.putUint16(self);
   }
 
   @protected
@@ -901,8 +997,6 @@ class DataHandlerImpl extends RustOpaque implements DataHandler {
   Future<void> process({required List<int> bytes}) => RustLib.instance.api
       .crateApiDataHandlerDataHandlerProcess(that: this, bytes: bytes);
 
-  Future<List<Uint16List>> readDataCsv() =>
-      RustLib.instance.api.crateApiDataHandlerDataHandlerReadDataCsv(
-        that: this,
-      );
+  Future<void> saveDataCsv({required List<int> data}) => RustLib.instance.api
+      .crateApiDataHandlerDataHandlerSaveDataCsv(that: this, data: data);
 }
