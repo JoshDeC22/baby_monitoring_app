@@ -23,8 +23,8 @@ class LivePlotPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Live Data Plot')),
       body: Column(
         children: [
-          Expanded(child: GraphWidget(number: 1, paramName: 'glucose', data: glucoseData, lineColor: Colors.green)),
-          Expanded(child: GraphWidget(number: 2, paramName: 'lactate', data: lactateData, lineColor: Colors.red)),
+          Expanded(child: GraphWidget(number: 1, paramName: 'glucose', data: glucoseData, lineColor: Colors.green, plotType: 's',)),
+          Expanded(child: GraphWidget(number: 2, paramName: 'lactate', data: lactateData, lineColor: Colors.red, plotType: 's',)),
         ],
       ),
     );
