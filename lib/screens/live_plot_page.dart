@@ -8,7 +8,7 @@ class LivePlotPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime dummyTime = DateTime.parse('2025-01-01 11:00:00Z');
+    DateTime dummyTime = DateTime.parse('2025-01-01 11:00:00');
     final List<ChartData> glucoseData = [
       ChartData(dummyTime, 4),
       ChartData(dummyTime.add(const Duration(minutes: 1)), 5),
@@ -20,12 +20,14 @@ class LivePlotPage extends StatelessWidget {
       ChartData(dummyTime.add(const Duration(minutes: 7)), 2),
       ChartData(dummyTime.add(const Duration(minutes: 8)), 4),
       ChartData(dummyTime.add(const Duration(minutes: 9)), 6),
-      ChartData(dummyTime.add(const Duration(hours: 1)), 3),
+      //ChartData(dummyTime.add(const Duration(hours: 1)), 3),
     ];
     final List<ChartData> lactateData = [
       ChartData(DateTime.now(), 1),
       ChartData(DateTime.now().add(const Duration(minutes: 1)), 1),
     ];
+
+    // TODO: connect to backend
 
     return Scaffold(
       appBar: AppBar(title: const Text('Live Data Plot')),
