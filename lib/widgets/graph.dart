@@ -188,7 +188,8 @@ class GraphWidgetState extends State<GraphWidget> {
                       annotations,
                       widget.plotType,
                       _tooltipBehavior,
-                      _zoomPanBehavior),
+                      _zoomPanBehavior,
+                      widget.paramName),
                 ),
               );
             },
@@ -318,7 +319,8 @@ class ExpandedGraphPageState extends State<ExpandedGraphPage> {
                   widget.annotations,
                   widget.plotType,
                   _tooltipBehavior,
-                  _zoomPanBehavior),
+                  _zoomPanBehavior,
+                  widget.paramName),
             );
           },
         ),
@@ -396,7 +398,8 @@ Widget _createPlot(
     ValueNotifier<List<CartesianChartAnnotation>> annotations,
     String plotType,
     TooltipBehavior tooltipBehavior,
-    ZoomPanBehavior zoomPanBehavior) {
+    ZoomPanBehavior zoomPanBehavior,
+    String name) {
   double animationDuration = plotType == "s"
       ? 0
       : 0.1; // set the animation duration to 0 if the plot is static and 0.1 if it is live
@@ -407,9 +410,13 @@ Widget _createPlot(
     tooltipBehavior: tooltipBehavior, //enabling tooltips
     zoomPanBehavior: zoomPanBehavior, //enabling zooming and panning
     primaryXAxis: xAxis, // set the x axis
+    primaryYAxis: NumericAxis(
+      title: AxisTitle(text: '$name (Arbitrary Units)'),
+    ),
     // Create the line showing the data
     series: <LineSeries<ChartData, DateTime>>[
       LineSeries<ChartData, DateTime>(
+        name: name,
         dataSource: data, // set the data source
         color: lineColor, // set the line color
         enableTooltip: true, // allow plot interaction
@@ -426,20 +433,50 @@ Widget _createPlot(
 
   // if the plot is static then just return the plotWidget, if it is live then wrap it in a StreamBuilder
   if (plotType == 's') {
-    return plotWidget;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0), // Adds space/padding around the card
+        child: Card(
+          elevation: 10, // Adds a shadow around the card
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // Rounded corners
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16.0), // Padding inside the card
+            //height: 400, // fix
+            child: plotWidget,
+          )
+        )
+      )
+    );
   } else {
-    return StreamBuilder<int>(
-        stream: dataStream!, // set the data stream
-        builder: (context, snap) {
-          // whenever data is sent from rust, add it to the data list and return the plotWidget
-          if (snap.hasData) {
-            final y = snap.data!;
-            final x = DateTime.now();
-            data.add(ChartData(x, y));
-          }
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0), // Adds space/padding around the card
+        child: Card(
+          elevation: 10, // Adds a shadow around the card
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // Rounded corners
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16.0), // Padding inside the card
+            //height: 400, // fix
+            child: StreamBuilder<int>(
+              stream: dataStream!, // set the data stream
+              builder: (context, snap) {
+                // whenever data is sent from rust, add it to the data list and return the plotWidget
+                if (snap.hasData) {
+                  final y = snap.data!;
+                  final x = DateTime.now();
+                  data.add(ChartData(x, y));
+                }
 
-          return plotWidget;
-        });
+                return plotWidget;
+              }),
+          )
+        )
+      )
+    );
   }
 }
 

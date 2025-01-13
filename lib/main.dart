@@ -1,4 +1,5 @@
 import 'package:baby_monitoring_app/screens/first_screen.dart';
+import 'package:baby_monitoring_app/screens/test_pages/static_plot_page_test.dart';
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:baby_monitoring_app/src/rust/frb_generated.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const GraphScreen(), //screneing for displaying graphs
+      home: const StaticPlotPageTest(), //screneing for displaying graphs
     );
   }
 }

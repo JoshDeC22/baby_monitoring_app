@@ -35,7 +35,7 @@ class StaticPlotPage extends StatelessWidget {
           ),
           child: AppBar(
             title: const Text(
-              'Real-time Blood Parameter Monitoring',
+              'Static Blood Parameter Monitoring',
               style: TextStyle(color: Colors.white, fontSize: 30.0, fontWeight: FontWeight.bold),
             ),
             backgroundColor: AppColors.darkBlue, 
