@@ -19,7 +19,6 @@ pub struct DataHandler {
     num_channels: u8,
     current_time: DateTime<Utc>,
     day: u8,
-    is_static: bool,
     
     filter_matrix: Vec<Vec<u16>>,
     pub data_list: Vec<u16>,
@@ -53,7 +52,7 @@ impl DataHandler {
             writer = None;
         }
 
-        DataHandler { stream_sinks, csv_path, writer, num_channels, current_time, day, filter_matrix, data_list, error, is_static }
+        DataHandler { stream_sinks, csv_path, writer, num_channels, current_time, day, filter_matrix, data_list, error }
     }
 
 
