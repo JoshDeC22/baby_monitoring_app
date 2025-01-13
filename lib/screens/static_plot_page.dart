@@ -1,9 +1,10 @@
 // live_plot_page.dart
+import 'dart:math';
+
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../utils/data_model.dart';
 import '../widgets/graph.dart';
 
 class StaticPlotPage extends StatelessWidget {
@@ -14,7 +15,9 @@ class StaticPlotPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get the app state and static data
     final appState = Provider.of<AppStateProvider>(context);
-    
+    final comments = appState.staticCommentData;
+    final data = appState.staticData;
+    final names = appState.channelNames;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -40,7 +43,7 @@ class StaticPlotPage extends StatelessWidget {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  // Idk 
+                  // TODO: navigate back to home
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.palePink, 
@@ -49,11 +52,13 @@ class StaticPlotPage extends StatelessWidget {
                     side: BorderSide(color: AppColors.darkPink, width: 1.5), 
                   ),
                 ),
-                child: const Text('Make plots static', style: TextStyle(color: Colors.black, fontSize: 15.0)),
+                child: const Text('Go Home', style: TextStyle(color: Colors.black, fontSize: 15.0)),
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_drop_down, color: Colors.white, size: 50),
-                onPressed: () => _showPopupMenu(context),
+                onPressed: () => {
+                  // TODO: navigate back to home
+                }
               ),
             ],
           ),
@@ -61,14 +66,27 @@ class StaticPlotPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: GraphWidget(number: 1, paramName: 'glucose', data: glucoseData, lineColor: Colors.green, plotType: 'l'),
-          ),
-          Expanded(
-            child: GraphWidget(number: 2, paramName: 'lactate', data: lactateData, lineColor: Colors.red, plotType: 'l'),
-          ),
+          for (int i = 0; i < data.length; i++)
+            if (i == 0) 
+              Expanded(
+                child: GraphWidget(number: 1, data: data[i], paramName: names[i], lineColor: Colors.green, plotType: 's', commentData: comments),
+              )
+            else if (i == 1)
+              Expanded(
+                child: GraphWidget(number: 1, data: data[i], paramName: names[i], lineColor: Colors.red, plotType: 's', commentData: comments),
+              )
+            else
+              Expanded(
+                child: GraphWidget(number: i + 1, data: data[i], paramName: names[i], lineColor: generateRandomColor(), plotType: 's', commentData: comments),
+              )
         ],
       ),
     );
   }
+}
+
+
+Color generateRandomColor() {
+  final random = Random();
+  return Color.fromARGB(255, random.nextInt(255), random.nextInt(255), random.nextInt(255));
 }

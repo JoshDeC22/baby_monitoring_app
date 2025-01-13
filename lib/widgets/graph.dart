@@ -1,4 +1,5 @@
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/comment_data.dart';
 import 'package:baby_monitoring_app/utils/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
@@ -13,6 +14,7 @@ class GraphWidget extends StatefulWidget {
       paramName; // the name of the parameter that is being graphed (e.g. Glucose)
   final Color lineColor; // the color of the line
   final String plotType; // either 's' or 'l' for static or live
+  final List<CommentData> commentData; // the initial list of annotations
 
   // Constructor
   const GraphWidget({
@@ -22,6 +24,7 @@ class GraphWidget extends StatefulWidget {
     required this.paramName,
     required this.lineColor,
     required this.plotType,
+    required this.commentData,
   });
 
   // This is a stateful widget so the widget state is created here
@@ -41,8 +44,7 @@ class GraphWidgetState extends State<GraphWidget> {
   late DateTimeAxisController
       axisController; // controller to retrieve information about the x axis
   // This value notifier allows for the chart to dynamically update when annotations are added
-  final ValueNotifier<List<CartesianChartAnnotation>> annotations =
-      ValueNotifier<List<CartesianChartAnnotation>>([]);
+  late ValueNotifier<List<CartesianChartAnnotation>> annotations;
 
   // this function runs when the state is created
   @override
@@ -84,6 +86,33 @@ class GraphWidgetState extends State<GraphWidget> {
     } else {
       dataStream = null;
     }
+
+    // Initialize annotations
+    List<CartesianChartAnnotation> annotationList = [];
+    for (CommentData comment in widget.commentData) {
+      final time = comment.time;
+      final commentString = comment.comment;
+      final bitVal = _getBitValFromTime(widget.data, time.toString());
+      final annotation = CartesianChartAnnotation(
+        // Create the outline of the annotation
+        widget: Container(
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          // Set the text inside the annotation to the text within the text field
+          child: Text(
+            commentString,
+          )
+        ),
+        coordinateUnit: CoordinateUnit.point,
+        x: time,
+        y: bitVal,
+      );
+      annotationList.add(annotation);
+    }
+    annotations = ValueNotifier(annotationList);
   }
 
   // this function builds the graph widget
@@ -412,4 +441,18 @@ Widget _createPlot(
           return plotWidget;
         });
   }
+}
+
+// This function gets the bit value of a data point based on the time value
+int? _getBitValFromTime(List<ChartData> data, String time) {
+  // loop through the data list and find the first element that matches the time
+  for (int i = 0; i < data.length; i++) {
+    String dataPointTime = data[i].time.toString();
+
+    if (dataPointTime == time) {
+      return data[i].bitVal;
+    }
+  }
+
+  return null;
 }
