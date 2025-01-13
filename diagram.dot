@@ -1,0 +1,258 @@
+@startuml
+set namespaceSeparator ::
+
+class "baby_monitoring_app::colors.dart::AppColors" {
+  {static} +Color darkBlue
+  {static} +Color accentColor
+  {static} +Color backgroundGrey
+  {static} +Color paleYellow
+  {static} +Color Yellow
+  {static} +Color palePink
+  {static} +Color darkPink
+}
+
+"baby_monitoring_app::colors.dart::AppColors" o-- "dart::ui::Color"
+
+class "baby_monitoring_app::utils::annotation_provider.dart::AnnotationProvider" {
+  -List<CartesianChartAnnotation> _annotationList
+  +List<CartesianChartAnnotation> annotationList
+  +void addAnnotation()
+  +void clearAnnotations()
+}
+
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "baby_monitoring_app::utils::annotation_provider.dart::AnnotationProvider"
+
+class "baby_monitoring_app::screens::bluetooth_page.dart::BluetoothDevicePage" {
+  +Widget build()
+  -void _showPopupMenu()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "baby_monitoring_app::screens::bluetooth_page.dart::BluetoothDevicePage"
+
+class "baby_monitoring_app::screens::bluetooth_page.dart::BluetoothDeviceList" {
+  +_BluetoothDeviceListState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "baby_monitoring_app::screens::bluetooth_page.dart::BluetoothDeviceList"
+
+class "baby_monitoring_app::screens::bluetooth_page.dart::_BluetoothDeviceListState" {
+  +List<String> availableDevices
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "baby_monitoring_app::screens::bluetooth_page.dart::_BluetoothDeviceListState"
+
+class "baby_monitoring_app::screens::live_plot_page.dart::LivePlotPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "baby_monitoring_app::screens::live_plot_page.dart::LivePlotPage"
+
+class "baby_monitoring_app::main.dart::MyApp" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "baby_monitoring_app::main.dart::MyApp"
+
+class "baby_monitoring_app::widgets::graph_item.dart::GraphItem" {
+  +int number
+  +String plotType
+  +List<ChartData> data
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "baby_monitoring_app::widgets::graph_item.dart::GraphItem"
+
+class "baby_monitoring_app::widgets::graph_item.dart::ExpandedGraphPage" {
+  +List<ChartData> data
+  +String plotType
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "baby_monitoring_app::widgets::graph_item.dart::ExpandedGraphPage"
+
+class "baby_monitoring_app::widgets::comment_popup.dart::CommentPopup" {
+  +DateTime time
+  +int bitVal
+  +ValueNotifier<List<CartesianChartAnnotation>> annotations
+  +CommentPopupState createState()
+}
+
+"baby_monitoring_app::widgets::comment_popup.dart::CommentPopup" o-- "flutter::src::foundation::change_notifier.dart::ValueNotifier<List<CartesianChartAnnotation>>"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "baby_monitoring_app::widgets::comment_popup.dart::CommentPopup"
+
+class "baby_monitoring_app::widgets::comment_popup.dart::CommentPopupState" {
+  -TextEditingController _controller
+  +void dispose()
+  +Widget build()
+}
+
+"baby_monitoring_app::widgets::comment_popup.dart::CommentPopupState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "baby_monitoring_app::widgets::comment_popup.dart::CommentPopupState"
+
+class "baby_monitoring_app::widgets::graph.dart::GraphWidget" {
+  +int number
+  +List<ChartData> data
+  +String paramName
+  +Color lineColor
+  +GraphWidgetState createState()
+}
+
+"baby_monitoring_app::widgets::graph.dart::GraphWidget" o-- "dart::ui::Color"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "baby_monitoring_app::widgets::graph.dart::GraphWidget"
+
+class "baby_monitoring_app::widgets::graph.dart::GraphWidgetState" {
+  -ZoomPanBehavior _zoomPanBehavior
+  -TooltipBehavior _tooltipBehavior
+  -DateTimeAxis _xAxis
+  +ValueNotifier<List<CartesianChartAnnotation>> annotations
+  +void initState()
+  +Widget build()
+}
+
+"baby_monitoring_app::widgets::graph.dart::GraphWidgetState" o-- "syncfusion_flutter_charts::src::charts::behaviors::zooming.dart::ZoomPanBehavior"
+"baby_monitoring_app::widgets::graph.dart::GraphWidgetState" o-- "syncfusion_flutter_charts::src::charts::interactions::tooltip.dart::TooltipBehavior"
+"baby_monitoring_app::widgets::graph.dart::GraphWidgetState" o-- "syncfusion_flutter_charts::src::charts::axis::datetime_axis.dart::DateTimeAxis"
+"baby_monitoring_app::widgets::graph.dart::GraphWidgetState" o-- "flutter::src::foundation::change_notifier.dart::ValueNotifier<List<CartesianChartAnnotation>>"
+"flutter::src::widgets::framework.dart::State" <|-- "baby_monitoring_app::widgets::graph.dart::GraphWidgetState"
+
+class "baby_monitoring_app::widgets::graph.dart::ExpandedGraphPage" {
+  +List<ChartData> data
+  +String paramName
+  +Color lineColor
+  +ValueNotifier<List<CartesianChartAnnotation>> annotations
+  +ExpandedGraphPageState createState()
+}
+
+"baby_monitoring_app::widgets::graph.dart::ExpandedGraphPage" o-- "dart::ui::Color"
+"baby_monitoring_app::widgets::graph.dart::ExpandedGraphPage" o-- "flutter::src::foundation::change_notifier.dart::ValueNotifier<List<CartesianChartAnnotation>>"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "baby_monitoring_app::widgets::graph.dart::ExpandedGraphPage"
+
+class "baby_monitoring_app::widgets::graph.dart::ExpandedGraphPageState" {
+  -ZoomPanBehavior _zoomPanBehavior
+  -TooltipBehavior _tooltipBehavior
+  -DateTimeAxis _xAxis
+  +void initState()
+  +Widget build()
+}
+
+"baby_monitoring_app::widgets::graph.dart::ExpandedGraphPageState" o-- "syncfusion_flutter_charts::src::charts::behaviors::zooming.dart::ZoomPanBehavior"
+"baby_monitoring_app::widgets::graph.dart::ExpandedGraphPageState" o-- "syncfusion_flutter_charts::src::charts::interactions::tooltip.dart::TooltipBehavior"
+"baby_monitoring_app::widgets::graph.dart::ExpandedGraphPageState" o-- "syncfusion_flutter_charts::src::charts::axis::datetime_axis.dart::DateTimeAxis"
+"flutter::src::widgets::framework.dart::State" <|-- "baby_monitoring_app::widgets::graph.dart::ExpandedGraphPageState"
+
+class "baby_monitoring_app::widgets::data_model.dart::ChartData" {
+  +DateTime time
+  +int bitVal
+}
+
+abstract class "baby_monitoring_app::src::rust::frb_generated.web.dart::RustLibApiImplPlatform" {
+  #String dco_decode_String()
+  #Uint8List dco_decode_list_prim_u_8_strict()
+  #int dco_decode_u_8()
+  #void dco_decode_unit()
+  #String sse_decode_String()
+  #Uint8List sse_decode_list_prim_u_8_strict()
+  #int sse_decode_u_8()
+  #void sse_decode_unit()
+  #int sse_decode_i_32()
+  #bool sse_decode_bool()
+  #void sse_encode_String()
+  #void sse_encode_list_prim_u_8_strict()
+  #void sse_encode_u_8()
+  #void sse_encode_unit()
+  #void sse_encode_i_32()
+  #void sse_encode_bool()
+}
+
+"flutter_rust_bridge::src::main_components::api_impl.dart::BaseApiImpl" <|-- "baby_monitoring_app::src::rust::frb_generated.web.dart::RustLibApiImplPlatform"
+
+class "baby_monitoring_app::src::rust::frb_generated.web.dart::RustLibWire" {
+}
+
+"flutter_rust_bridge::src::main_components::wire.dart::BaseWire" <|-- "baby_monitoring_app::src::rust::frb_generated.web.dart::RustLibWire"
+
+class "baby_monitoring_app::src::rust::frb_generated.dart::RustLib" {
+  {static} +RustLib instance
+  {static} +ExternalLibraryLoaderConfig kDefaultExternalLibraryLoaderConfig
+  +RustLibApiImpl Function({required GeneralizedFrbRustBinding generalizedFrbRustBinding, required BaseHandler handler, required PortManager portManager, required RustLibWire wire}) apiImplConstructor
+  +RustLibWire Function(ExternalLibrary) wireConstructor
+  +ExternalLibraryLoaderConfig defaultExternalLibraryLoaderConfig
+  +String codegenVersion
+  +int rustContentHash
+  {static} +dynamic init()
+  {static} +void initMock()
+  {static} +void dispose()
+  +dynamic executeRustInitializers()
+}
+
+"baby_monitoring_app::src::rust::frb_generated.dart::RustLib" o-- "baby_monitoring_app::src::rust::frb_generated.dart::RustLib"
+"baby_monitoring_app::src::rust::frb_generated.dart::RustLib" o-- "flutter_rust_bridge::src::loader::_common.dart::ExternalLibraryLoaderConfig"
+"baby_monitoring_app::src::rust::frb_generated.dart::RustLib" o-- "flutter_rust_bridge::src::main_components::api_impl.dart::RustLibApiImpl Function({required GeneralizedFrbRustBinding generalizedFrbRustBinding, required BaseHandler handler, required PortManager portManager, required RustLibWire wire})"
+"baby_monitoring_app::src::rust::frb_generated.dart::RustLib" o-- "flutter_rust_bridge::src::main_components::wire.dart::RustLibWire Function(ExternalLibrary)"
+"flutter_rust_bridge::src::main_components::entrypoint.dart::BaseEntrypoint" <|-- "baby_monitoring_app::src::rust::frb_generated.dart::RustLib"
+
+abstract class "baby_monitoring_app::src::rust::frb_generated.dart::RustLibApi" {
+  +String crateApiSimpleGreet()
+  +dynamic crateApiSimpleInitApp()
+}
+
+"flutter_rust_bridge::src::main_components::api.dart::BaseApi" <|-- "baby_monitoring_app::src::rust::frb_generated.dart::RustLibApi"
+
+class "baby_monitoring_app::src::rust::frb_generated.dart::RustLibApiImpl" {
+  +TaskConstMeta kCrateApiSimpleGreetConstMeta
+  +TaskConstMeta kCrateApiSimpleInitAppConstMeta
+  +String crateApiSimpleGreet()
+  +dynamic crateApiSimpleInitApp()
+  #String dco_decode_String()
+  #Uint8List dco_decode_list_prim_u_8_strict()
+  #int dco_decode_u_8()
+  #void dco_decode_unit()
+  #String sse_decode_String()
+  #Uint8List sse_decode_list_prim_u_8_strict()
+  #int sse_decode_u_8()
+  #void sse_decode_unit()
+  #int sse_decode_i_32()
+  #bool sse_decode_bool()
+  #void sse_encode_String()
+  #void sse_encode_list_prim_u_8_strict()
+  #void sse_encode_u_8()
+  #void sse_encode_unit()
+  #void sse_encode_i_32()
+  #void sse_encode_bool()
+}
+
+"baby_monitoring_app::src::rust::frb_generated.dart::RustLibApiImpl" o-- "flutter_rust_bridge::src::task.dart::TaskConstMeta"
+"baby_monitoring_app::src::rust::frb_generated.io.dart::RustLibApiImplPlatform" <|-- "baby_monitoring_app::src::rust::frb_generated.dart::RustLibApiImpl"
+"baby_monitoring_app::src::rust::frb_generated.dart::RustLibApi" <|-- "baby_monitoring_app::src::rust::frb_generated.dart::RustLibApiImpl"
+
+abstract class "baby_monitoring_app::src::rust::frb_generated.io.dart::RustLibApiImplPlatform" {
+  #String dco_decode_String()
+  #Uint8List dco_decode_list_prim_u_8_strict()
+  #int dco_decode_u_8()
+  #void dco_decode_unit()
+  #String sse_decode_String()
+  #Uint8List sse_decode_list_prim_u_8_strict()
+  #int sse_decode_u_8()
+  #void sse_decode_unit()
+  #int sse_decode_i_32()
+  #bool sse_decode_bool()
+  #void sse_encode_String()
+  #void sse_encode_list_prim_u_8_strict()
+  #void sse_encode_u_8()
+  #void sse_encode_unit()
+  #void sse_encode_i_32()
+  #void sse_encode_bool()
+}
+
+"flutter_rust_bridge::src::main_components::api_impl.dart::BaseApiImpl" <|-- "baby_monitoring_app::src::rust::frb_generated.io.dart::RustLibApiImplPlatform"
+
+class "baby_monitoring_app::src::rust::frb_generated.io.dart::RustLibWire" {
+  -Pointer<T> Function<T extends NativeType>(String) _lookup
+}
+
+"baby_monitoring_app::src::rust::frb_generated.io.dart::RustLibWire" o-- "null::Pointer<T> Function<T extends NativeType>(String)"
+"flutter_rust_bridge::src::main_components::wire.dart::BaseWire" <|-- "baby_monitoring_app::src::rust::frb_generated.io.dart::RustLibWire"
+
+
+@enduml
