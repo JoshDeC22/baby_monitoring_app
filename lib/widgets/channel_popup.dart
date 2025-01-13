@@ -182,7 +182,7 @@ class ChannelPopupState extends State<ChannelPopup> {
                   ElevatedButton(
                     onPressed: () {
                       // update the app state and add the new channel list
-                      final appState = Provider.of<AppStateProvider>(context);
+                      final appState = Provider.of<AppStateProvider>(context, listen: false);
                       appState.setChannelNames(_channelNames);
 
                       // close the popup

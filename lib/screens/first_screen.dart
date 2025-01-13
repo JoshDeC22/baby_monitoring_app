@@ -110,7 +110,7 @@ class HomeScreenState extends State<HomeScreen> {
                   child: ElevatedButton(
           onPressed: () {
             // Get the app state
-            final appState = Provider.of<AppStateProvider>(context);
+            final appState = Provider.of<AppStateProvider>(context, listen: false);
 
             // initialize the variable to hold the file name
             String filename = '';
