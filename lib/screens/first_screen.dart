@@ -1,6 +1,7 @@
 import 'package:baby_monitoring_app/screens/static_plot_page.dart';
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:baby_monitoring_app/widgets/channel_popup.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,9 @@ import 'package:provider/provider.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+
+  
+
   // Since this is a stateful widget, the state is initialized here
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -26,25 +30,56 @@ class HomeScreenState extends State<HomeScreen> {
   List<String> _channelNames = []; // List of the channel names
 
   // This function builds all the widgets within the home screen
-  @override
+ @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
+    return Scaffold(
+      body: Container(
+        color: AppColors.darkBlue, // Set the entire background to darkBlue
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Center content vertically
+            children: [
+              // Add the logo image
+              Image.asset(
+                'assets/AppLogo.png', // Update to the correct path of your image
+                width: 500.0,
+                height: 150.0,
+              ),
+              const SizedBox(height: 20.0),
         // Create the button to connect to a bluetooth classic device
-        ElevatedButton(
+        Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30.0),
+                child: SizedBox(
+                  width: 400, 
+                  child: ElevatedButton(
           onPressed: () {
             // Show the popup to add channel names
             showDialog(
               context: context, 
               builder: (BuildContext context) {
                 return ChannelPopup(bluetoothClassic: true); // true because connecting to a bluetooth classic device
-              }
+              },
             );
-          }, 
+           },
+            style: ElevatedButton.styleFrom(
+                   backgroundColor: AppColors.paleYellow,
+                   foregroundColor: Colors.black,
+                    textStyle: const TextStyle(fontSize: 20),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: BorderSide(color: AppColors.yellow, width: 1.0),
+            ),
+          ), 
           child: Text("Connect to Bluetooth Classic Device")
         ),  
+         ),
+              ),
         // Create the button to connect to a bluetooth LE device
-        ElevatedButton(
+        Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: SizedBox(
+                  width: 400, 
+                  child: ElevatedButton(
           onPressed: () {
             // show the popup to add channel names
             showDialog(
@@ -54,10 +89,25 @@ class HomeScreenState extends State<HomeScreen> {
               },
             );
           }, 
-          child: Text("Connect to Bluetooth LE Device")
-        ),  
+          style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.paleYellow,
+                      foregroundColor: Colors.black,
+                      textStyle: const TextStyle(fontSize: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: AppColors.yellow, width: 1.0),
+                      ),
+                    ),
+                    child: const Text("Connect to Bluetooth LE Device"),
+                  ),
+                ),
+              ),
         // Create the button to open a file
-        ElevatedButton(
+         Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30.0),
+                child: SizedBox(
+                  width: 400, 
+                  child: ElevatedButton(
           onPressed: () {
             // Get the app state
             final appState = Provider.of<AppStateProvider>(context);
@@ -131,9 +181,22 @@ class HomeScreenState extends State<HomeScreen> {
               return;
             }
           }, 
+          style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.palePink,
+                      foregroundColor: Colors.black,
+                      textStyle: const TextStyle(fontSize: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: AppColors.darkPink, width: 1.0),
+                      ),
+                    ),
           child: Text("Open File")
-        ),  
-      ],
+        ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
-  }
-}
+  }}

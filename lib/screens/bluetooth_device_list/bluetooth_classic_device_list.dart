@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/bluetooth_classic.dart';
+import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_classic/flutter_blue_classic.dart';
 import 'package:provider/provider.dart';
@@ -98,8 +99,6 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
                 // Get the app state and add the device
                 final appState = Provider.of<AppStateProvider>(context);
                 appState.setBluetoothDevice(device);
-
-                // TODO: navigate to live plot page
               },
             ),
             const Padding(
