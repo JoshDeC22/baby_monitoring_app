@@ -100,7 +100,7 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiDataHandlerDataHandlerProcess(
       {required DataHandler that, required List<int> bytes});
 
-  Future<(List<String>, List<Uint16List>)>
+  Future<(List<String>, List<Uint16List>)?>
       crateApiDataHandlerDataHandlerReadDataCsv(
           {required String fileDirectory});
 
@@ -108,14 +108,6 @@ abstract class RustLibApi extends BaseApi {
       {required DataHandler that, required List<int> data});
 
   Future<void> crateApiInitInitApp();
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_BoxError;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_BoxError;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_BoxErrorPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_DataHandler;
@@ -307,7 +299,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<(List<String>, List<Uint16List>)>
+  Future<(List<String>, List<Uint16List>)?>
       crateApiDataHandlerDataHandlerReadDataCsv(
           {required String fileDirectory}) {
     return handler.executeNormal(NormalTask(
@@ -319,9 +311,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData:
-            sse_decode_record_list_string_list_list_prim_u_16_strict,
-        decodeErrorData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError,
+            sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict,
+        decodeErrorData: null,
       ),
       constMeta: kCrateApiDataHandlerDataHandlerReadDataCsvConstMeta,
       argValues: [fileDirectory],
@@ -387,14 +378,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_BoxError => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_BoxError => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError;
-
-  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_DataHandler => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDataHandler;
 
@@ -406,14 +389,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return AnyhowException(raw as String);
-  }
-
-  @protected
-  BoxError
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BoxErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -441,14 +416,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  BoxError
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BoxErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
   DataHandler
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDataHandler(
           dynamic raw) {
@@ -472,6 +439,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   bool dco_decode_bool(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as bool;
+  }
+
+  @protected
+  (List<String>, List<Uint16List>)
+      dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as (List<String>, List<Uint16List>);
   }
 
   @protected
@@ -525,6 +500,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  (List<String>, List<Uint16List>)?
+      dco_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict(
+            raw);
+  }
+
+  @protected
   (List<String>, List<Uint16List>)
       dco_decode_record_list_string_list_list_prim_u_16_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -570,15 +556,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  BoxError
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BoxErrorImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   DataHandler
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDataHandler(
           SseDeserializer deserializer) {
@@ -602,15 +579,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return DataHandlerImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  BoxError
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BoxErrorImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -641,6 +609,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  (List<String>, List<Uint16List>)
+      sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_record_list_string_list_list_prim_u_16_strict(
+        deserializer));
   }
 
   @protected
@@ -716,6 +693,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  (List<String>, List<Uint16List>)?
+      sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict(
+          deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   (List<String>, List<Uint16List>)
       sse_decode_record_list_string_list_list_prim_u_16_strict(
           SseDeserializer deserializer) {
@@ -757,15 +748,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError(
-          BoxError self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as BoxErrorImpl).frbInternalSseEncode(move: true), serializer);
-  }
-
-  @protected
-  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDataHandler(
           DataHandler self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -791,15 +773,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_usize(
         (self as DataHandlerImpl).frbInternalSseEncode(move: false),
         serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBoxdynError(
-          BoxError self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as BoxErrorImpl).frbInternalSseEncode(move: null), serializer);
   }
 
   @protected
@@ -834,6 +807,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict(
+      (List<String>, List<Uint16List>) self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_record_list_string_list_list_prim_u_16_strict(self, serializer);
   }
 
   @protected
@@ -906,6 +886,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict(
+      (List<String>, List<Uint16List>)? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict(
+          self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_record_list_string_list_list_prim_u_16_strict(
       (List<String>, List<Uint16List>) self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -935,26 +927,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
   }
-}
-
-@sealed
-class BoxErrorImpl extends RustOpaque implements BoxError {
-  // Not to be used by end users
-  BoxErrorImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  BoxErrorImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_BoxError,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_BoxError,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_BoxErrorPtr,
-  );
 }
 
 @sealed
