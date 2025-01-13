@@ -1,10 +1,17 @@
+import 'package:baby_monitoring_app/screens/first_screen.dart';
+import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:baby_monitoring_app/src/rust/frb_generated.dart';
+import 'package:provider/provider.dart';
 import 'widgets/graph_widget.dart';
 import 'blood_data.dart';
 import '../utils/csv_reader.dart'; // Import the CSV loader
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  await RustLib.init();
+  runApp(
+    ChangeNotifierProvider(create: (context) => AppStateProvider(), child: const MyApp())
+  );
 }
 
 // Main application widget
