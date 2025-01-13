@@ -88,7 +88,7 @@ class CommentPopupState extends State<CommentPopup> {
                       // add the annotation to the annotations list
                       widget.annotations.value = [...widget.annotations.value, annotation];
                       // Get the app state and data handler
-                      final appState = Provider.of<AppStateProvider>(context, listen: false);
+                      final appState = context.read<AppStateProvider>();
                       DataHandler dataHandler = appState.dataHandler!;
                       dataHandler.saveCommentsCsv(comment: comment, timestamp: widget.time);
                       // close the popup

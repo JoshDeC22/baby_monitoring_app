@@ -81,7 +81,7 @@ class GraphWidgetState extends State<GraphWidget> {
     // Initialize data stream, if static plotting, set the data stream to null
     if (widget.plotType != 's') {
       // Retrieve the data handler from the app state
-      final appState = Provider.of<AppStateProvider>(context, listen: false);
+      final appState = context.read<AppStateProvider>();
       dataStream = appState.dataStreams![widget.number - 1].stream;
     } else {
       dataStream = null;
