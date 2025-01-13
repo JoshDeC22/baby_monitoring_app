@@ -1,11 +1,14 @@
+import 'package:baby_monitoring_app/screens/first_screen.dart';
+import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:baby_monitoring_app/src/rust/frb_generated.dart';
-//import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
-import 'src/screens/bluetooth_device_list/bluetooth_le_device_list.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   await RustLib.init();
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(create: (context) => AppStateProvider(), child: const MyApp())
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -14,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: BluetoothLEDevicePage()
+      home: HomeScreen(),
     );
   }
 }

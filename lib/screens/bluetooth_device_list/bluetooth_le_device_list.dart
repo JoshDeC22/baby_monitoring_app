@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/bluetooth_le.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:provider/provider.dart';
 
 // This is the class that when instantiated scans for bluetooth low energy devices and lists any that are found.
 // Since this is a StatefulWidget, any changes to the _results field in the state class will result in a UI update.
@@ -71,6 +74,13 @@ class _BluetoothLEDeviceState extends State<BluetoothLEDevicePage> {
               ListTile(
                 title: Text(result.device.platformName.isEmpty ? "Unknown Device" : result.device.platformName),
                 subtitle: Text(result.device.remoteId.toString()),
+                onTap: () { // when one of the devices is tapped, wrap that device in the BluetoothLEWrapper and add it to the app state
+                  BluetoothLEWrapper device = BluetoothLEWrapper(result.device, context);
+
+                  // get the app state and add the device to it
+                  final appState = Provider.of<AppStateProvider>(context);
+                  appState.setBluetoothDevice(device);
+                },
               )
         ],
       )
