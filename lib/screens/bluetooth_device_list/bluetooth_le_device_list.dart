@@ -80,6 +80,8 @@ class _BluetoothLEDeviceState extends State<BluetoothLEDevicePage> {
                   // get the app state and add the device to it
                   final appState = Provider.of<AppStateProvider>(context);
                   appState.setBluetoothDevice(device);
+
+                  // TODO: go to live plot page
                 },
               )
         ],

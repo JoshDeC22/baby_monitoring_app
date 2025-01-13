@@ -13,10 +13,11 @@ use crate::frb_generated::StreamSink;
 #[frb(opaque)]
 pub struct DataHandler {
     #[frb(name = "dataList")]
-    stream_sinks: Vec<StreamSink<i32>>,
+    stream_sinks: Vec<StreamSink<u16>>,
     csv_path: String,
     writer: Option<Writer<File>>,
     num_channels: u8,
+    channel_names: Option<Vec<String>>,
     current_time: DateTime<Utc>,
     day: u8,
     
@@ -28,7 +29,7 @@ pub struct DataHandler {
 impl DataHandler {
     #[frb(sync)]
     // Constructor of the DataHandler Class
-    pub fn new(stream_sinks: Vec<StreamSink<i32>>, num_channels: u8, dir: String, filename: String) -> Self {
+    pub fn new(stream_sinks: Vec<StreamSink<u16>>, num_channels: u8, dir: String, filename: String, is_static: bool, channel_names: Option<Vec<String>>) -> Self {
         // Create empty arrays to hold the returned data and byte array
         let data_list: Vec<u16> = Vec::with_capacity(num_channels as usize);
         let filter_matrix: Vec<Vec<u16>> = vec![Vec::new(); num_channels as usize];
@@ -40,9 +41,20 @@ impl DataHandler {
         let csv_path: String = dir + "/" + filename.as_str();
 
         // Creates CSV File
-        let (writer, error, current_time) = Self::create_file(&csv_path, day, num_channels);
+        let writer: Option<Writer<File>>;
+        let error: bool;
+        let current_time: DateTime<Utc>;
 
-        DataHandler { stream_sinks, csv_path, writer, num_channels, current_time, day, filter_matrix, data_list, error }
+        if !is_static {
+            let names: Vec<String> = channel_names.clone().expect("");
+            (writer, error, current_time) = Self::create_file(&csv_path, day, num_channels, names);
+        } else {
+            error = false;
+            current_time = Utc::now();
+            writer = None;
+        }
+
+        DataHandler { stream_sinks, csv_path, writer, num_channels, channel_names, current_time, day, filter_matrix, data_list, error }
     }
 
 
@@ -53,7 +65,7 @@ impl DataHandler {
         - Adds a Header in the CSV File with the Date and the Number of Channels.
         - Returns a Writer Object for the Created File, A boolean value indicating if an Error has occured, and the Current Date and Time the file was created.
     */
-    fn create_file(csv_path: &String, day: u8, num_channels: u8) -> (Option<Writer<File>>, bool, DateTime<Utc>) {
+    fn create_file(csv_path: &String, day: u8, num_channels: u8, channel_names: Vec<String>) -> (Option<Writer<File>>, bool, DateTime<Utc>) {
         let csv_name = format!("{}_{}.csv", csv_path, day); // Path to the CSV File
         let current_time = Utc::now();               // Get the Current Time
 
@@ -88,8 +100,8 @@ impl DataHandler {
         // The Following Code Creates the Header of the CSV File
         // Reformats the Current Time to give Year, Month, Date
         let mut header:Vec<String> = vec![current_time.format("%Y-%m-%d").to_string()]; 
-        for i in 1..=num_channels {
-            header.push(format!(" Channel {}", i));
+        for name in channel_names {
+            header.push(name);
         }
         if let Err(_) = writer.write_record(header) {
             return (None, true, current_time)
@@ -110,7 +122,7 @@ impl DataHandler {
     fn update_file(&mut self) -> Result<(), Box<dyn std::error::Error>>{
         self.day += 1; // Increments the Current Day by 1
         // Creates a New CSV File for the Next Day
-        let (writer, error, current_time) = Self::create_file(&self.csv_path, self.day, self.num_channels);
+        let (writer, error, current_time) = Self::create_file(&self.csv_path, self.day, self.num_channels, self.channel_names.clone().expect(""));
 
         // Updates the Current_Time and Writer Object
         if !error {
@@ -188,7 +200,7 @@ impl DataHandler {
             for (channel, points) in self.filter_matrix.iter().enumerate() {
 
                 // Take the sum of all the Data Points
-                let sum: i32 = points.iter().map(|&val| val as i32).sum();
+                let sum: u16 = points.iter().map(|&val| val).sum();
 
                 // Send sum to Flutter via the corresponding StreamSink
                 self.stream_sinks[channel].add(sum).expect("Error streaming data")
@@ -205,34 +217,6 @@ impl DataHandler {
 
         Ok(())
     }
-
-
-    // Previous filter Function
-    /*
-    async fn filter(&mut self) -> Result<()> {
-        // Enumerate over data_list, this is done to get the correct index of the byte_array and stream sink for the current channel
-        self.data_list.iter().enumerate().map(|(ind, &val)| {
-            let byte_array: &mut Vec<u16> = &mut self.byte_array[ind]; // byte array for the current channel
-
-            byte_array.push(val); // Add the new value for the channel
-
-            // If the byte array is 10 elements long, take the sum of all the data points and send it back to flutter
-            // Once in flutter the sum will be divided by 10 to get the average. This is done since stream sinks can only send
-            // i32 values.
-            if byte_array.len() == 10 {
-                let sum: i32 = byte_array.iter().map(|&val| val as i32).sum::<i32>(); // Sum elements of the byte array
-
-                // Calling the add method on the stream sink for this channel sends the data to flutter
-                self.stream_sinks[ind].add(sum).expect("Error streaming data"); //Implement better error handling
-
-                byte_array.clear(); // Clear the byte array
-            }
-        });
-
-        Ok(())
-    }
-    */
-    
 
 
     /* 
@@ -279,16 +263,19 @@ impl DataHandler {
         - Returns a Result Object Containing time_list and data_list
         - time_list is a Vector containing all the Time Points taken
         - data_list is a Vector containing a Vector of Channel Values for each Channel
+        - comment_list is a Vector containing Comments made on the Same Day as the File and their Time Stamps
 
         E.g. 
-        return [ time_list , data_list ]
+        return [ time_list , data_list , comment_list , channel_names ]
         time_list = [14:18:46.677, 14:18:46.782, 14:18:46.887, 14:18:46.989, 14:18:47.094]
         data_list = [ [Channel 1 Values] , [Channel 2 Values] ]
                   = [ [ 13, 9, 5, 7, 8 ] , [ 3, 6, 11, 8, 1 ] ]
+
+        comment_list = [ 14:18:46, "Glucose Spike" ]
      */
-    pub fn read_data_csv(file_directory: String) -> Option<(Vec<String>, Vec<Vec<u16>>)> {
+    pub fn read_data_csv(mut file_directory: String) -> Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>, Vec<String>)> {
         // Open the CSV File and create the Reader
-        let file = match File::open(file_directory) {
+        let file = match File::open(&file_directory) {
             Ok(file) => file,
             Err(_) => return None,
         };
@@ -299,12 +286,14 @@ impl DataHandler {
         // Creates time_list. time_list stores all the time points refering to when each Channel Value was Collected
         let mut time_list: Vec<String> = Vec::new();
         // Creates data_list. data_list is a Vector containg a multiple Vectors of Channel Values. One for each Channel
-        let headers = match reader.headers() {
-            Ok(headers) => headers,
+        let mut headers: Vec<String> = match reader.headers() {
+            Ok(headers) => headers.iter().map(|name| String::from(name)).collect(),
             Err(_) => return None,
         };
 
-        let mut data_list: Vec<Vec<u16>> = vec![Vec::new(); headers.len() - 1];
+        headers.remove(0);
+
+        let mut data_list: Vec<Vec<u16>> = vec![Vec::new(); headers.len()];
     
         // Loop through each Line in the CSV File
         for result in reader.records() {
@@ -333,9 +322,113 @@ impl DataHandler {
                 }
             }
         }
+
+        // The Day of the File Opened
+        let mut day = String::new();
+
+        // From the File Name, extract the root_name and the day
+        if let Some(root_name_length) = file_directory.rfind('_') {
+            file_directory.truncate(root_name_length);
+            file_directory.push_str("comment");
+            day = file_directory[root_name_length + 1..].to_string();
+        }
+        
+        // Open the comment CSV File and create the Reader
+        let comment_file = match File::open(file_directory) {
+            Ok(comment_file) => comment_file,
+            Err(_) => return Some((time_list, data_list, vec![], headers)),
+        };
+
+        // Create the Reader Object for the comment CSV file
+        let mut comment_reader = ReaderBuilder::new()
+            .from_reader(comment_file);
+
+        // Vectors contatining the Comments and their Time Stamps
+        let mut comments: Vec<String> = Vec::new();
+        let mut timestamps: Vec<String> = Vec::new();
+
+        // Iterate through each Line in the comment CSV file
+        for result in comment_reader.records() {
+            let record = match result {
+                Ok(record) => record,
+                Err(_) => return None,
+            }; // Unpackage Result into Record
+
+            // Iterate through each Comment and their Time Stamp and Day
+            for value in record.iter() {
+                if value.parse::<u16>() != day.parse::<u16>() {
+                    // Disregard the comment it was not made on the Day of the read CSV File
+                    break;
+                } else if let Ok(_time) = NaiveTime::parse_from_str(value, "%H:%M:%S") {
+                    // Add the Time (as a String) to timestamps
+                    timestamps.push(value.to_string());
+                } else {
+                    // Add the Comment to somments
+                    comments.push(value.to_string());
+                }
+            }
+        }
+        
+        // Combine the Comments and Time Stamps into a single Vector
+        let comment_list: Vec<Vec<String>> = vec![timestamps, comments];
+
         // Return data_list
-        Some((time_list, data_list))
+        return Some((time_list, data_list, comment_list, headers));
     
+    }
+
+
+    /*
+        save_comments_csv() is a Public Function that takes in a comment and its timestamp
+        - Returns nothing
+        - Creates a comment CSV file if one does not yet exist
+        - Calls write_function() to write the comment, its timestamp and the day into the comment CSV file
+    */
+    pub async fn save_comments_csv(&mut self, comment: String, timestamp: DateTime<Utc>) {
+        let csv_name = format!("{}_comments.csv", self.csv_path); // Path to the CSV File
+
+        // If the comment CSV file does not yet exist, create it
+        if !Path::new(&csv_name).exists() {
+            match File::create(&csv_name) {
+                Ok(_) => {},
+                Err(_) => {
+                    panic!("Couldn't Create File");
+                }
+            };
         }
 
+        // Write the Comment with the Time Stamp into the comment CSV file
+        Self::write_comment(self, csv_name, comment, timestamp);
+
+    }
+
+
+    /*
+        write_comment() is a Private, Static Function that takes in a comment and its timestamp
+        - Returns a trivial Option<i32> object
+        - Opens the comment CSV file and creates a Writer Object for it
+        - Writes the Comment, Day, TimeStamp (H/M/S) in to the comment CSV file
+    */
+    fn write_comment(&mut self, csv_name: String, comment: String, timestamp: DateTime<Utc>) -> Option<i32> {
+        // Opens the comment CSV file for Appending. If not Opened, the Data in the File will be Overwritten
+        let file = match OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open(&csv_name)
+        {
+            Ok(file) => file,
+            Err(_) => {
+                return Some(1);
+            }
+        };
+        
+        // Create the Writer Object that will Write Data to the CSV File
+        let mut writer: Writer<File> = WriterBuilder::new()
+            .from_writer(file);
+
+        let comment_line:Vec<String> = vec![self.day.to_string(), timestamp.format("%H:%M:%S%").to_string(), comment];
+        writer.write_record(comment_line).expect("Error: Nothing to Write.");
+
+        return Some(1);
+    }
 }

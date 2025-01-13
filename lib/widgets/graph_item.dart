@@ -1,7 +1,7 @@
 // graph_item.dart
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'data_model.dart';
+import '../utils/data_model.dart';
 
 class GraphItem extends StatelessWidget {
   final int number;

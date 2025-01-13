@@ -43,4 +43,10 @@ class BluetoothLEWrapper implements BluetoothWrapper {
       print(e);
     }
   }
+
+  // This function closes the connection when live plotting is finished
+  @override
+  void disconnect() {
+    _device.disconnect();
+  }
 }
