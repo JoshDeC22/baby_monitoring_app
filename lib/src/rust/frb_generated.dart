@@ -247,7 +247,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_list_StreamSink_i_32_Sse(streamSinks, serializer);
+        sse_encode_list_StreamSink_u_16_Sse(streamSinks, serializer);
         sse_encode_u_8(numChannels, serializer);
         sse_encode_String(dir, serializer);
         sse_encode_String(filename, serializer);
@@ -424,7 +424,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<int> dco_decode_StreamSink_i_32_Sse(dynamic raw) {
+  RustStreamSink<int> dco_decode_StreamSink_u_16_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     throw UnimplementedError();
   }
@@ -450,15 +450,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int dco_decode_i_32(dynamic raw) {
+  List<RustStreamSink<int>> dco_decode_list_StreamSink_u_16_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as int;
-  }
-
-  @protected
-  List<RustStreamSink<int>> dco_decode_list_StreamSink_i_32_Sse(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_StreamSink_i_32_Sse).toList();
+    return (raw as List<dynamic>).map(dco_decode_StreamSink_u_16_Sse).toList();
   }
 
   @protected
@@ -592,7 +586,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<int> sse_decode_StreamSink_i_32_Sse(
+  RustStreamSink<int> sse_decode_StreamSink_u_16_Sse(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     throw UnimplementedError('Unreachable ()');
@@ -621,20 +615,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
-  }
-
-  @protected
-  List<RustStreamSink<int>> sse_decode_list_StreamSink_i_32_Sse(
+  List<RustStreamSink<int>> sse_decode_list_StreamSink_u_16_Sse(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
     var ans_ = <RustStreamSink<int>>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_StreamSink_i_32_Sse(deserializer));
+      ans_.add(sse_decode_StreamSink_u_16_Sse(deserializer));
     }
     return ans_;
   }
@@ -740,6 +728,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
+  }
+
+  @protected
   void sse_encode_AnyhowException(
       AnyhowException self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -785,13 +779,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_StreamSink_i_32_Sse(
+  void sse_encode_StreamSink_u_16_Sse(
       RustStreamSink<int> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(
         self.setupAndSerialize(
             codec: SseCodec(
-          decodeSuccessData: sse_decode_i_32,
+          decodeSuccessData: sse_decode_u_16,
           decodeErrorData: sse_decode_AnyhowException,
         )),
         serializer);
@@ -817,18 +811,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
-  }
-
-  @protected
-  void sse_encode_list_StreamSink_i_32_Sse(
+  void sse_encode_list_StreamSink_u_16_Sse(
       List<RustStreamSink<int>> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
-      sse_encode_StreamSink_i_32_Sse(item, serializer);
+      sse_encode_StreamSink_u_16_Sse(item, serializer);
     }
   }
 
@@ -926,6 +914,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_usize(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
   }
 }
 

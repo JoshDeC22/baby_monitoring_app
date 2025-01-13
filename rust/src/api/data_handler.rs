@@ -28,7 +28,7 @@ pub struct DataHandler {
 impl DataHandler {
     #[frb(sync)]
     // Constructor of the DataHandler Class
-    pub fn new(stream_sinks: Vec<StreamSink<i32>>, num_channels: u8, dir: String, filename: String) -> Self {
+    pub fn new(stream_sinks: Vec<StreamSink<u16>>, num_channels: u8, dir: String, filename: String) -> Self {
         // Create empty arrays to hold the returned data and byte array
         let data_list: Vec<u16> = Vec::with_capacity(num_channels as usize);
         let filter_matrix: Vec<Vec<u16>> = vec![Vec::new(); num_channels as usize];
@@ -177,7 +177,7 @@ impl DataHandler {
         This assumption is based on the fact that data_list is only sent when it has the a Data Point
         for each channel.
     */
-    async fn filter(&mut self, data_list: &Vec<u16>) -> Result<()> {
+    async fn filter(&mut self, data_list: &Vec<u16>) {
         // For each Data Point, add the Data Point to its corresponding Channel Vector in the filter_matrix
         for (channel, value) in data_list.iter().enumerate() {
             self.filter_matrix[channel].push(*value);
@@ -188,7 +188,7 @@ impl DataHandler {
             for (channel, points) in self.filter_matrix.iter().enumerate() {
 
                 // Take the sum of all the Data Points
-                let sum: i32 = points.iter().map(|&val| val as i32).sum();
+                let sum: u16 = points.iter().map(|&val| val).sum();
 
                 // Send sum to Flutter via the corresponding StreamSink
                 self.stream_sinks[channel].add(sum).expect("Error streaming data")
@@ -202,8 +202,6 @@ impl DataHandler {
             // Reallocate some memory for the new filter_matrix
             self.filter_matrix = vec![Vec::new(); self.num_channels as usize];
         }
-
-        Ok(())
     }
 
 
@@ -286,9 +284,9 @@ impl DataHandler {
         data_list = [ [Channel 1 Values] , [Channel 2 Values] ]
                   = [ [ 13, 9, 5, 7, 8 ] , [ 3, 6, 11, 8, 1 ] ]
      */
-    pub fn read_data_csv(file_directory: String) -> Option<(Vec<String>, Vec<Vec<u16>>)> {
+    pub fn read_data_csv(mut file_directory: String) -> Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)> {
         // Open the CSV File and create the Reader
-        let file = match File::open(file_directory) {
+        let file = match File::open(&file_directory) {
             Ok(file) => file,
             Err(_) => return None,
         };
@@ -333,9 +331,108 @@ impl DataHandler {
                 }
             }
         }
+
+        let mut day = String::new();
+
+        if let Some(root_name_length) = file_directory.rfind('_') {
+            file_directory.truncate(root_name_length);
+            file_directory.push_str("comment");
+            day = file_directory[root_name_length + 1..].to_string();
+        }
+        
+        // Open the CSV File and create the Reader
+        let comment_file = match File::open(file_directory) {
+            Ok(comment_file) => comment_file,
+            Err(_) => return Some((time_list, data_list, vec![])),
+        };
+
+        let mut comment_reader = ReaderBuilder::new()
+            .from_reader(comment_file);
+
+        let mut comments: Vec<String> = Vec::new();
+        let mut timestamps: Vec<String> = Vec::new();
+
+        for result in comment_reader.records() {
+            let record = match result {
+                Ok(record) => record,
+                Err(_) => return None,
+            }; // Unpackage Result into Record
+
+            // Iterate through each Channel Value at a Single Time Tnstant
+            for value in record.iter() {
+                if value.parse::<u16>() != day.parse::<u16>() {
+                    // Disregard the comment it was not made on the Day of the read CSV File
+                    break;
+                } else if let Ok(_time) = NaiveTime::parse_from_str(value, "%H:%M:%S") {
+                    // Add the Time (as a String) to timestamps
+                    timestamps.push(value.to_string());
+                } else {
+                    comments.push(value.to_string());
+                }
+            }
+        }
+        let comment_list: Vec<Vec<String>> = vec![timestamps, comments];
+
         // Return data_list
-        Some((time_list, data_list))
+        return Some((time_list, data_list, comment_list));
     
         }
+
+
+
+    /*
+        save_comments_csv() is a Public, Static Function that takes in a comment and its timestamp
+        - Returns nothing
+        - Creates a comment CSV file if one does not yet exist
+        - Calls write_function() to write the comment, its timestamp and the day into the comment CSV file
+    */
+    pub fn save_comments_csv(&mut self, comment: String, timestamp: DateTime<Utc>) {
+        let csv_name = format!("{}_comments.csv", self.csv_path); // Path to the CSV File
+
+        // If the comment CSV file does not yet exist, create it
+        if !Path::new(&csv_name).exists() {
+            match File::create(&csv_name) {
+                Ok(_) => {},
+                Err(_) => {
+                    panic!("Couldn't Create File");
+                }
+            };
+        }
+
+        // Write the Comment with the Time Stamp into the comment CSV file
+        Self::write_comment(self, csv_name, comment, timestamp);
+
+    }
+
+
+    /*
+        write_comment() is a Private, Static Function that takes in a comment and its timestamp
+        - Returns a trivial Option<i32> object
+        - Opens the comment CSV file and creates a Writer Object for it
+        - Writes the Comment, Day, TimeStamp (H/M/S) in to the comment CSV file
+    */
+    fn write_comment(&mut self, csv_name: String, comment: String, timestamp: DateTime<Utc>) -> Option<i32> {
+        // Opens the comment CSV file for Appending. If not Opened, the Data in the File will be Overwritten
+        let file = match OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open(&csv_name)
+        {
+            Ok(file) => file,
+            Err(_) => {
+                return Some(1);
+            }
+        };
+        
+        // Create the Writer Object that will Write Data to the CSV File
+        let mut writer: Writer<File> = WriterBuilder::new()
+            .from_writer(file);
+
+        let comment_line:Vec<String> = vec![self.day.to_string(), timestamp.format("%H:%M:%S%").to_string(), comment];
+        writer.write_record(comment_line).expect("Error: Nothing to Write.");
+
+        return Some(1);
+    }
+        
 
 }

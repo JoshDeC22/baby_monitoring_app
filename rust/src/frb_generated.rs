@@ -262,7 +262,7 @@ fn wire__crate__api__data_handler__DataHandler_new_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_stream_sinks = <Vec<
-                StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec>,
+                StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec>,
             >>::sse_decode(&mut deserializer);
             let api_num_channels = <u8>::sse_decode(&mut deserializer);
             let api_dir = <String>::sse_decode(&mut deserializer);
@@ -510,7 +510,7 @@ impl SseDecode
     }
 }
 
-impl SseDecode for StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec> {
+impl SseDecode for StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <String>::sse_decode(deserializer);
@@ -533,21 +533,14 @@ impl SseDecode for bool {
     }
 }
 
-impl SseDecode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
-    }
-}
-
-impl SseDecode for Vec<StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec>> {
+impl SseDecode for Vec<StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<StreamSink<
-                i32,
+                u16,
                 flutter_rust_bridge::for_generated::SseCodec,
             >>::sse_decode(deserializer));
         }
@@ -646,6 +639,13 @@ impl SseDecode for usize {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u64::<NativeEndian>().unwrap() as _
+    }
+}
+
+impl SseDecode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
     }
 }
 
@@ -756,7 +756,7 @@ impl SseEncode
     }
 }
 
-impl SseEncode for StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec> {
+impl SseEncode for StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         unimplemented!("")
@@ -777,19 +777,12 @@ impl SseEncode for bool {
     }
 }
 
-impl SseEncode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
-    }
-}
-
-impl SseEncode for Vec<StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec>> {
+impl SseEncode for Vec<StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec>>::sse_encode(
+            <StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec>>::sse_encode(
                 item, serializer,
             );
         }
@@ -880,6 +873,13 @@ impl SseEncode for usize {
             .cursor
             .write_u64::<NativeEndian>(self as _)
             .unwrap();
+    }
+}
+
+impl SseEncode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
     }
 }
 
