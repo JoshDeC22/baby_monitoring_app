@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/bluetooth_classic.dart';
+import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_classic/flutter_blue_classic.dart';
 import 'package:provider/provider.dart';
@@ -82,29 +83,92 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
   Widget build(BuildContext context) {
     List<BluetoothDevice> results = _results.toList(); // results of the scan
 
-    return ListView(
-      children: [
-        if (results.isEmpty)
-          const Center(child: Text('No devices found.')) // Display "No devices found." if the scan yields no results
-        else 
-          for (var result in results)
-          // if the scan has results, list them
-            ListTile(
-              title: Text(result.name ?? "Unknown Device"),
-              subtitle: Text("(${result.address})"),
-              onTap: () { // when a device is tapped, wrap the device with the BtClassicWrapper and add it to the app state
-                BtClassicWrapper device = BtClassicWrapper(result, context); // Wrap the device
-
-                // Get the app state and add the device
-                final appState = Provider.of<AppStateProvider>(context);
-                appState.setBluetoothDevice(device);
-              },
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 23),
-              child: Divider(),
-            )
+    return Scaffold(
+      appBar: PreferredSize(
+  preferredSize: const Size.fromHeight(90.0), // Increase AppBar height
+  child: Container(
+    decoration: const BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black26,
+          spreadRadius: 1,
+          blurRadius: 10,
+          offset: Offset(0, 3),
+        ),
       ],
+    ),
+    child: AppBar(
+      leadingWidth: 250.0, // Explicitly set the width of the leading area
+      leading: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset(
+          'assets/AppLogo.png', // Path to your image
+          fit: BoxFit.contain,
+        ),
+      ),
+      title: const Text(
+        'Bluetooth Classic Device Selection',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 35.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      backgroundColor: AppColors.darkBlue,
+      centerTitle: true,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 20.0), // Add padding to move icon away from border
+          child: IconButton(
+            icon: const Icon(
+              Icons.home,
+              size: 40.0,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/home'); // Navigate to the HomeScreen
+            },
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
+
+     body: Container(
+        color: AppColors.backgroundGrey, // Set the background color
+        child: results.isEmpty
+              ? const Center(
+                child: Text('No devices found', // Display "No devices found." if the scan yields no results
+                style: TextStyle(
+                    color: AppColors.darkRed,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.darkRed,
+                  ),
+                ),
+              )
+            : ListView(
+                children: [
+                  for (var result in results)
+                    ListTile(
+                      title: Text(result.name ?? "Unknown Device"),
+                      subtitle: Text("(${result.address})"),
+                      onTap: () {
+                        BtClassicWrapper device = BtClassicWrapper(result, context);
+                        final appState = Provider.of<AppStateProvider>(context);
+                        appState.setBluetoothDevice(device);
+                      },
+                    ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 23),
+                    child: Divider(),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 }
