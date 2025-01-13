@@ -11,7 +11,7 @@ class StaticPlotPageTest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime dummyTime = DateTime.parse('2025-01-01 11:00:00'); // Year/Month/Day
+    DateTime dummyTime = DateTime.parse('2025-01-01 11:17:00'); // Year/Month/Day
     final List<ChartData> dummyData = [
       ChartData(dummyTime, 4),
       ChartData(dummyTime.add(const Duration(minutes: 1)), 5),
@@ -23,7 +23,6 @@ class StaticPlotPageTest extends StatelessWidget {
       ChartData(dummyTime.add(const Duration(minutes: 7)), 2),
       ChartData(dummyTime.add(const Duration(minutes: 8)), 4),
       ChartData(dummyTime.add(const Duration(minutes: 9)), 6),
-      ChartData(dummyTime.add(const Duration(hours: 1)), 3),
     ];
     final data = [dummyData, dummyData];
     final names = ["Glucose", "Lactate"];
@@ -48,7 +47,7 @@ class StaticPlotPageTest extends StatelessWidget {
             else if (i == 1)
               Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: GraphWidget(number: 2, data: data[i], paramName: names[i], lineColor: Colors.green, plotType: 's', commentData: []),
+                  child: GraphWidget(number: 2, data: dummyData, paramName: names[i], lineColor: Colors.green, plotType: 's', commentData: []),
               )
             else
               Padding(

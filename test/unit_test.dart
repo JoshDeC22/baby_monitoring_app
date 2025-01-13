@@ -1,8 +1,10 @@
+import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/widgets/comment_popup.dart';
 import 'package:baby_monitoring_app/utils/data_model.dart';
 import 'package:baby_monitoring_app/widgets/graph.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 main() {
@@ -169,21 +171,24 @@ main() {
     // Comment Test
     testWidgets("Graph Should be Able to be Commented",
         (WidgetTester tester) async {
-      // Create a Test GraphItem Widget
+      // Create a Test GraphWidget
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GraphWidget(
-                number: 1,
-                data: dummyData,
-                paramName: 'lactate',
-                lineColor: Colors.red,
-                plotType: 's',
-                commentData: []),
-          ),
-        ),
+        ChangeNotifierProvider(create: (context) => AppStateProvider(), child: 
+          MaterialApp(
+            home: Scaffold(
+              body: GraphWidget(
+                  number: 1,
+                  data: dummyData,
+                  paramName: 'lactate',
+                  lineColor: Colors.red,
+                  plotType: 's',
+                  commentData: []),
+            ),
+          )
+        )
       );
 
+      
       // Wait for the Chart to Properly Initiallize and Find the Coordinates of the Chart
       await tester.pumpAndSettle();
       final chart = find.byType(SfCartesianChart);
@@ -221,6 +226,24 @@ main() {
     });
 
     // Backend Test
-    testWidgets("The Backend should return", (WidgetTester tester) async {});
+    testWidgets("The Backend should return", (WidgetTester tester) async {
+      // Creates a test GraphWidget
+      await tester.pumpWidget(
+        ChangeNotifierProvider(create: (context) => AppStateProvider(), child: 
+          MaterialApp(
+            home: Scaffold(
+              body: GraphWidget(
+                  number: 1,
+                  data: dummyData,
+                  paramName: 'lactate',
+                  lineColor: Colors.red,
+                  plotType: 's',
+                  commentData: []),
+            ),
+          )
+        )
+      );
+    });
+      
   });
 }
