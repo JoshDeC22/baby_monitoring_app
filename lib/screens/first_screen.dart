@@ -1,3 +1,4 @@
+import 'package:baby_monitoring_app/screens/static_plot_page.dart';
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/widgets/channel_popup.dart';
@@ -20,7 +21,8 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   List<String> _timeStrings = []; // List of static times (if doing static plotting)
-  List<Uint16List> _bitValues = []; // List of data values for each channle (if doing static plotting)
+  List<Uint16List> _bitValues = []; // List of data values for each channel (if doing static plotting)
+  List<List<String>> _commentData = []; // List of the comments associated with this data
 
   // This function builds all the widgets within the home screen
   @override
@@ -56,6 +58,9 @@ class HomeScreenState extends State<HomeScreen> {
         // Create the button to open a file
         ElevatedButton(
           onPressed: () {
+            // Get the app state
+            final appState = Provider.of<AppStateProvider>(context);
+
             // initialize the variable to hold the file name
             String filename = '';
 
@@ -65,7 +70,9 @@ class HomeScreenState extends State<HomeScreen> {
                 if (result != null) {
                   filename = result.files.single.name;
                 } else {
-                  // TODO: error handle
+                  // if an error occurs clear the app state and don't go further
+                  appState.clearAppState();
+                  return;
                 }
               }
             );
@@ -81,24 +88,42 @@ class HomeScreenState extends State<HomeScreen> {
                 DataHandler.readDataCsv(fileDirectory: filename).then(
                   (result) {
                     // Get the data and change the widget state
-                    final (timeStrings, bitValues) = result!;
+                    final (timeStrings, bitValues, commentData) = result!;
                     setState(() {
                       _timeStrings = timeStrings;
                       _bitValues = bitValues;
+                      _commentData = commentData;
                     });
                   }
                 );
 
+                // Create the data handler and add it to the app state
+                String dir = p.dirname(filename); // get the directory of the csv file
+                String name = p.basename(filename); // get the base file name of the csv file
+
+                DataHandler dataHandler = DataHandler(streamSinks: [], numChannels: 0, dir: dir, filename: name, isStatic: true);
+                appState.setDataHandler(dataHandler);
+
                 // Add the data to the app state
-                final appState = Provider.of<AppStateProvider>(context);
                 appState.setStaticData(_timeStrings, _bitValues);
 
-                // TODO: navigate to static plot page
+                // Add the comments to the app state
+                appState.setStaticCommentData(_commentData);
+
+                // Navigate to the static plot page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => StaticPlotPage())
+                );
               } catch (error) {
-                // TODO: error handle
+                // if an error occurs clear the app state and don't go further
+                appState.clearAppState();
+                return;
               }
             } else {
-              // TODO: error handle
+              // if an error occurs clear the app state and don't go further
+              appState.clearAppState();
+              return;
             }
           }, 
           child: Text("Open File")
