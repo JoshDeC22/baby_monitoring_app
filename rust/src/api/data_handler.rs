@@ -376,7 +376,7 @@ impl DataHandler {
 
 
     /*
-        save_comments_csv() is a Public, Static Function that takes in a comment and its timestamp
+        save_comments_csv() is a Public Function that takes in a comment and its timestamp
         - Returns nothing
         - Creates a comment CSV file if one does not yet exist
         - Calls write_function() to write the comment, its timestamp and the day into the comment CSV file
