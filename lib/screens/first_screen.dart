@@ -81,7 +81,7 @@ class HomeScreenState extends State<HomeScreen> {
                 DataHandler.readDataCsv(fileDirectory: filename).then(
                   (result) {
                     // Get the data and change the widget state
-                    final (timeStrings, bitValues) = result;
+                    final (timeStrings, bitValues) = result!;
                     setState(() {
                       _timeStrings = timeStrings;
                       _bitValues = bitValues;

@@ -3,7 +3,7 @@ use csv::{
     ReaderBuilder, Writer, WriterBuilder
 };
 use std::{
-    error::Error, fs::{File, OpenOptions}, path::Path
+    fs::{File, OpenOptions}, path::Path
 };
 use anyhow::Result;
 use chrono::{Duration, DateTime, NaiveTime, Utc};
@@ -155,7 +155,7 @@ impl DataHandler {
                 // Reason: Throws an error if you borrow two different mutable references of self
                 let cloned_data = self.data_list.clone();
 
-                self.filter(&cloned_data);   // Sends the data to the filter() function
+                self.filter(&cloned_data).await;   // Sends the data to the filter() function
                 self.save_data_csv(&cloned_data).await; // Saves (Writes) the data into the CSV File
 
                 self.data_list.clear(); // Clear the data_list after Saving
@@ -286,9 +286,12 @@ impl DataHandler {
         data_list = [ [Channel 1 Values] , [Channel 2 Values] ]
                   = [ [ 13, 9, 5, 7, 8 ] , [ 3, 6, 11, 8, 1 ] ]
      */
-    pub fn read_data_csv(file_directory: String) -> Result<(Vec<String>, Vec<Vec<u16>>), Box<dyn Error>> {
+    pub fn read_data_csv(file_directory: String) -> Option<(Vec<String>, Vec<Vec<u16>>)> {
         // Open the CSV File and create the Reader
-        let file = File::open(file_directory)?;
+        let file = match File::open(file_directory) {
+            Ok(file) => file,
+            Err(_) => return None,
+        };
         let mut reader = ReaderBuilder::new()
             .has_headers(true)
             .from_reader(file);
@@ -296,11 +299,19 @@ impl DataHandler {
         // Creates time_list. time_list stores all the time points refering to when each Channel Value was Collected
         let mut time_list: Vec<String> = Vec::new();
         // Creates data_list. data_list is a Vector containg a multiple Vectors of Channel Values. One for each Channel
-        let mut data_list: Vec<Vec<u16>> = vec![Vec::new(); reader.headers()?.len() - 1];
+        let headers = match reader.headers() {
+            Ok(headers) => headers,
+            Err(_) => return None,
+        };
+
+        let mut data_list: Vec<Vec<u16>> = vec![Vec::new(); headers.len() - 1];
     
         // Loop through each Line in the CSV File
         for result in reader.records() {
-            let record = result?; // Unpackage Result into Record
+            let record = match result {
+                Ok(record) => record,
+                Err(_) => return None,
+            }; // Unpackage Result into Record
 
             // Iterate through each Channel Value at a Single Time Tnstant
             for (channel, value) in record.iter().enumerate() {
@@ -318,12 +329,12 @@ impl DataHandler {
                     time_list.push(value.to_string());
     
                 } else {
-                    println!("Error parsing value: {}", value)
+                    return None;
                 }
             }
         }
         // Return data_list
-        Ok((time_list, data_list))
+        Some((time_list, data_list))
     
         }
 

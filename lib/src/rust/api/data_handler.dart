@@ -8,9 +8,6 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `create_file`, `filter`, `update_file`
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Box < dyn Error >>>
-abstract class BoxError implements RustOpaqueInterface {}
-
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DataHandler>>
 abstract class DataHandler implements RustOpaqueInterface {
   Uint16List get dataList;
@@ -34,7 +31,7 @@ abstract class DataHandler implements RustOpaqueInterface {
 
   Future<void> process({required List<int> bytes});
 
-  static Future<(List<String>, List<Uint16List>)> readDataCsv(
+  static Future<(List<String>, List<Uint16List>)?> readDataCsv(
           {required String fileDirectory}) =>
       RustLib.instance.api.crateApiDataHandlerDataHandlerReadDataCsv(
           fileDirectory: fileDirectory);
