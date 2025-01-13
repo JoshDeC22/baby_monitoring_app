@@ -1,18 +1,23 @@
 // live_plot_page.dart
+import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
-import '../utils/data_model.dart';
+import 'package:provider/provider.dart';
 import '../widgets/graph.dart';
+import 'package:baby_monitoring_app/screens/static_plot_page.dart';
 
 class LivePlotPage extends StatelessWidget {
   const LivePlotPage({super.key});
 
-
   @override
   Widget build(BuildContext context) {
+    // Get the app state and graph names
+    final appState = Provider.of<AppStateProvider>(context);
+    final channelNames = appState.channelNames;
+
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0), 
+        preferredSize: Size.fromHeight(60.0),
         child: Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -34,7 +39,7 @@ class LivePlotPage extends StatelessWidget {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  // Idk 
+                  // TODO: navigate back to home page
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.palePink, 
@@ -47,7 +52,9 @@ class LivePlotPage extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_drop_down, color: Colors.white, size: 50),
-                onPressed: () => _showPopupMenu(context),
+                onPressed: () {
+                  // TODO: navigate back to home page
+                },
               ),
             ],
           ),
@@ -55,47 +62,21 @@ class LivePlotPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: GraphWidget(number: 1, paramName: 'glucose', data: glucoseData, lineColor: Colors.green, plotType: 'l'),
-          ),
-          Expanded(
-            child: GraphWidget(number: 2, paramName: 'lactate', data: lactateData, lineColor: Colors.red, plotType: 'l'),
-          ),
+          for (int i = 0; i < channelNames.length; i++)
+            if (i == 0) 
+              Expanded(
+                child: GraphWidget(number: 1, data: [], paramName: channelNames[i], lineColor: Colors.red, plotType: 's', commentData: []),
+              )
+            else if (i == 1)
+              Expanded(
+                child: GraphWidget(number: 1, data: [], paramName: channelNames[i], lineColor: Colors.green, plotType: 's', commentData: []),
+              )
+            else
+              Expanded(
+                child: GraphWidget(number: i + 1, data: [], paramName: channelNames[i], lineColor: generateRandomColor(), plotType: 's', commentData: []),
+              )
         ],
       ),
     );
   }
 }
- void _showPopupMenu(BuildContext context) async {
-    await showMenu<String>(
-      context: context,
-      position: RelativeRect.fromLTRB(200.0, 80.0, 0.0, 0.0), //IconButton position
-      items: [
-        PopupMenuItem<String>(
-          value: 'past_recordings',
-          onTap: () {
-            Navigator.pushNamed(context, '/pastRecordings'); // Navigation to past recordings
-          },
-          child: 
-          const Text('Go to past recordings',
-          textAlign: TextAlign.center, 
-          style: TextStyle(fontSize: 18), 
-          ),
-        ),
-      ],
-      elevation: 8.0,
-    );
-  }
-
-
-final List<ChartData> glucoseData = [
-  ChartData(DateTime.now(), 4),
-  ChartData(DateTime.now().add(const Duration(minutes: 1)), 5),
-  ChartData(DateTime.now().add(const Duration(minutes: 2)), 4),
-  ChartData(DateTime.now().add(const Duration(minutes: 3)), 5),
-];
-
-final List<ChartData> lactateData = [
-  ChartData(DateTime.now(), 1),
-  ChartData(DateTime.now().add(const Duration(minutes: 1)), 1),
-];

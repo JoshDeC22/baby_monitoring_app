@@ -69,11 +69,11 @@ class StaticPlotPage extends StatelessWidget {
           for (int i = 0; i < data.length; i++)
             if (i == 0) 
               Expanded(
-                child: GraphWidget(number: 1, data: data[i], paramName: names[i], lineColor: Colors.green, plotType: 's', commentData: comments),
+                child: GraphWidget(number: 1, data: data[i], paramName: names[i], lineColor: Colors.red, plotType: 's', commentData: comments),
               )
             else if (i == 1)
               Expanded(
-                child: GraphWidget(number: 1, data: data[i], paramName: names[i], lineColor: Colors.red, plotType: 's', commentData: comments),
+                child: GraphWidget(number: 1, data: data[i], paramName: names[i], lineColor: Colors.green, plotType: 's', commentData: comments),
               )
             else
               Expanded(
