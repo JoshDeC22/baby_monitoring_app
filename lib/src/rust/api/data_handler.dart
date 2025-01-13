@@ -6,7 +6,7 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `create_file`, `filter`, `update_file`
+// These functions are ignored because they are not marked as `pub`: `create_file`, `filter`, `update_file`, `write_comment`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DataHandler>>
 abstract class DataHandler implements RustOpaqueInterface {
@@ -31,10 +31,13 @@ abstract class DataHandler implements RustOpaqueInterface {
 
   Future<void> process({required List<int> bytes});
 
-  static Future<(List<String>, List<Uint16List>)?> readDataCsv(
-          {required String fileDirectory}) =>
-      RustLib.instance.api.crateApiDataHandlerDataHandlerReadDataCsv(
-          fileDirectory: fileDirectory);
+  static Future<(List<String>, List<Uint16List>, List<List<String>>)?>
+      readDataCsv({required String fileDirectory}) =>
+          RustLib.instance.api.crateApiDataHandlerDataHandlerReadDataCsv(
+              fileDirectory: fileDirectory);
+
+  Future<void> saveCommentsCsv(
+      {required String comment, required DateTime timestamp});
 
   Future<void> saveDataCsv({required List<int> data});
 }
