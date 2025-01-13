@@ -1,7 +1,7 @@
 // live_plot_page.dart
 import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
-import '../widgets/data_model.dart';
+import '../utils/data_model.dart';
 import '../widgets/graph.dart';
 
 class LivePlotPage extends StatelessWidget {

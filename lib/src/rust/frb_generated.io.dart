@@ -41,12 +41,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  DateTime dco_decode_Chrono_Utc(dynamic raw);
+
+  @protected
   DataHandler
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDataHandler(
           dynamic raw);
 
   @protected
-  RustStreamSink<int> dco_decode_StreamSink_i_32_Sse(dynamic raw);
+  RustStreamSink<int> dco_decode_StreamSink_u_16_Sse(dynamic raw);
 
   @protected
   String dco_decode_String(dynamic raw);
@@ -55,18 +58,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
-  (List<String>, List<Uint16List>)
-      dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict(
-          dynamic raw);
+  (
+    List<String>,
+    List<Uint16List>,
+    List<List<String>>
+  ) dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+      dynamic raw);
 
   @protected
-  int dco_decode_i_32(dynamic raw);
+  PlatformInt64 dco_decode_i_64(dynamic raw);
 
   @protected
-  List<RustStreamSink<int>> dco_decode_list_StreamSink_i_32_Sse(dynamic raw);
+  List<RustStreamSink<int>> dco_decode_list_StreamSink_u_16_Sse(dynamic raw);
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
+  List<List<String>> dco_decode_list_list_String(dynamic raw);
 
   @protected
   List<Uint16List> dco_decode_list_list_prim_u_16_strict(dynamic raw);
@@ -84,13 +93,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  (List<String>, List<Uint16List>)?
-      dco_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict(
-          dynamic raw);
+  (
+    List<String>,
+    List<Uint16List>,
+    List<List<String>>
+  )? dco_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+      dynamic raw);
 
   @protected
-  (List<String>, List<Uint16List>)
-      dco_decode_record_list_string_list_list_prim_u_16_strict(dynamic raw);
+  (List<String>, List<Uint16List>, List<List<String>>)
+      dco_decode_record_list_string_list_list_prim_u_16_strict_list_list_string(
+          dynamic raw);
 
   @protected
   int dco_decode_u_16(dynamic raw);
@@ -123,12 +136,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  DateTime sse_decode_Chrono_Utc(SseDeserializer deserializer);
+
+  @protected
   DataHandler
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDataHandler(
           SseDeserializer deserializer);
 
   @protected
-  RustStreamSink<int> sse_decode_StreamSink_i_32_Sse(
+  RustStreamSink<int> sse_decode_StreamSink_u_16_Sse(
       SseDeserializer deserializer);
 
   @protected
@@ -138,19 +154,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
-  (List<String>, List<Uint16List>)
-      sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict(
-          SseDeserializer deserializer);
+  (
+    List<String>,
+    List<Uint16List>,
+    List<List<String>>
+  ) sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+      SseDeserializer deserializer);
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
   @protected
-  List<RustStreamSink<int>> sse_decode_list_StreamSink_i_32_Sse(
+  List<RustStreamSink<int>> sse_decode_list_StreamSink_u_16_Sse(
       SseDeserializer deserializer);
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
+  List<List<String>> sse_decode_list_list_String(SseDeserializer deserializer);
 
   @protected
   List<Uint16List> sse_decode_list_list_prim_u_16_strict(
@@ -169,13 +191,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  (List<String>, List<Uint16List>)?
-      sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict(
-          SseDeserializer deserializer);
+  (
+    List<String>,
+    List<Uint16List>,
+    List<List<String>>
+  )? sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+      SseDeserializer deserializer);
 
   @protected
-  (List<String>, List<Uint16List>)
-      sse_decode_record_list_string_list_list_prim_u_16_strict(
+  (List<String>, List<Uint16List>, List<List<String>>)
+      sse_decode_record_list_string_list_list_prim_u_16_strict_list_list_string(
           SseDeserializer deserializer);
 
   @protected
@@ -189,6 +214,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
   void sse_encode_AnyhowException(
@@ -210,12 +238,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           DataHandler self, SseSerializer serializer);
 
   @protected
+  void sse_encode_Chrono_Utc(DateTime self, SseSerializer serializer);
+
+  @protected
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDataHandler(
           DataHandler self, SseSerializer serializer);
 
   @protected
-  void sse_encode_StreamSink_i_32_Sse(
+  void sse_encode_StreamSink_u_16_Sse(
       RustStreamSink<int> self, SseSerializer serializer);
 
   @protected
@@ -225,18 +256,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict(
-      (List<String>, List<Uint16List>) self, SseSerializer serializer);
+  void
+      sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+          (List<String>, List<Uint16List>, List<List<String>>) self,
+          SseSerializer serializer);
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_StreamSink_i_32_Sse(
+  void sse_encode_list_StreamSink_u_16_Sse(
       List<RustStreamSink<int>> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_list_String(
+      List<List<String>> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_list_prim_u_16_strict(
@@ -258,12 +295,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
-  void sse_encode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict(
-      (List<String>, List<Uint16List>)? self, SseSerializer serializer);
+  void
+      sse_encode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+          (List<String>, List<Uint16List>, List<List<String>>)? self,
+          SseSerializer serializer);
 
   @protected
-  void sse_encode_record_list_string_list_list_prim_u_16_strict(
-      (List<String>, List<Uint16List>) self, SseSerializer serializer);
+  void
+      sse_encode_record_list_string_list_list_prim_u_16_strict_list_list_string(
+          (List<String>, List<Uint16List>, List<List<String>>) self,
+          SseSerializer serializer);
 
   @protected
   void sse_encode_u_16(int self, SseSerializer serializer);
@@ -276,6 +317,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
 }
 
 // Section: wire_class

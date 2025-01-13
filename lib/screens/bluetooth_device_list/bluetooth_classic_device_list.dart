@@ -98,6 +98,8 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
                 // Get the app state and add the device
                 final appState = Provider.of<AppStateProvider>(context);
                 appState.setBluetoothDevice(device);
+
+                // TODO: navigate to live plot page
               },
             ),
             const Padding(

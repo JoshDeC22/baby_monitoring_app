@@ -45,4 +45,12 @@ class BtClassicWrapper implements BluetoothWrapper {
       print(e); // Proper error handling to be implemented later
     }
   }
+
+  // This function disconnects the device when done real time plotting
+  @override
+  void disconnect() {
+    if (_conn != null) {
+      _conn!.close();
+    }
+  }
 }

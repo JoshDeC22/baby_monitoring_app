@@ -1,4 +1,7 @@
+import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
+import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 // This class is the comment popup that is used to add the text for annotations
@@ -84,6 +87,10 @@ class CommentPopupState extends State<CommentPopup> {
                       );
                       // add the annotation to the annotations list
                       widget.annotations.value = [...widget.annotations.value, annotation];
+                      // Get the app state and data handler
+                      final appState = Provider.of<AppStateProvider>(context);
+                      DataHandler dataHandler = appState.dataHandler!;
+                      dataHandler.saveCommentsCsv(comment: comment, timestamp: widget.time);
                       // close the popup
                       Navigator.pop(context);
                     }
@@ -105,9 +112,4 @@ class CommentPopupState extends State<CommentPopup> {
       ),
     );
   }
-}
-
-// Placeholder function to be replaced by rust function
-void _saveCommentData(String comment, DateTime time) {
-
 }

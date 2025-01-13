@@ -1,5 +1,5 @@
 import 'package:baby_monitoring_app/widgets/comment_popup.dart';
-import 'package:baby_monitoring_app/widgets/data_model.dart';
+import 'package:baby_monitoring_app/utils/data_model.dart';
 import 'package:baby_monitoring_app/widgets/graph.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

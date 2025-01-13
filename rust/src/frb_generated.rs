@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.6.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1376645912;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1587247573;
 
 // Section: executor
 
@@ -262,11 +262,12 @@ fn wire__crate__api__data_handler__DataHandler_new_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_stream_sinks = <Vec<
-                StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec>,
+                StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec>,
             >>::sse_decode(&mut deserializer);
             let api_num_channels = <u8>::sse_decode(&mut deserializer);
             let api_dir = <String>::sse_decode(&mut deserializer);
             let api_filename = <String>::sse_decode(&mut deserializer);
+            let api_is_static = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
                 let output_ok = Result::<_, ()>::Ok(crate::api::data_handler::DataHandler::new(
@@ -274,6 +275,7 @@ fn wire__crate__api__data_handler__DataHandler_new_impl(
                     api_num_channels,
                     api_dir,
                     api_filename,
+                    api_is_static,
                 ))?;
                 Ok(output_ok)
             })())
@@ -373,6 +375,70 @@ fn wire__crate__api__data_handler__DataHandler_read_data_csv_impl(
                     )?;
                     Ok(output_ok)
                 })())
+            }
+        },
+    )
+}
+fn wire__crate__api__data_handler__DataHandler_save_comments_csv_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DataHandler_save_comments_csv",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DataHandler>,
+            >>::sse_decode(&mut deserializer);
+            let api_comment = <String>::sse_decode(&mut deserializer);
+            let api_timestamp = <chrono::DateTime<chrono::Utc>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, ()>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, true,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref_mut().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let mut api_that_guard = api_that_guard.unwrap();
+                        let output_ok = Result::<_, ()>::Ok({
+                            crate::api::data_handler::DataHandler::save_comments_csv(
+                                &mut *api_that_guard,
+                                api_comment,
+                                api_timestamp,
+                            )
+                            .await;
+                        })?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
             }
         },
     )
@@ -500,6 +566,19 @@ impl SseDecode for DataHandler {
     }
 }
 
+impl SseDecode for chrono::DateTime<chrono::Utc> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i64>::sse_decode(deserializer);
+        return chrono::DateTime::<chrono::Utc>::from_naive_utc_and_offset(
+            chrono::DateTime::from_timestamp_micros(inner)
+                .expect("invalid or out-of-range datetime")
+                .naive_utc(),
+            chrono::Utc,
+        );
+    }
+}
+
 impl SseDecode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DataHandler>>
 {
@@ -510,7 +589,7 @@ impl SseDecode
     }
 }
 
-impl SseDecode for StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec> {
+impl SseDecode for StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <String>::sse_decode(deserializer);
@@ -533,21 +612,21 @@ impl SseDecode for bool {
     }
 }
 
-impl SseDecode for i32 {
+impl SseDecode for i64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
+        deserializer.cursor.read_i64::<NativeEndian>().unwrap()
     }
 }
 
-impl SseDecode for Vec<StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec>> {
+impl SseDecode for Vec<StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<StreamSink<
-                i32,
+                u16,
                 flutter_rust_bridge::for_generated::SseCodec,
             >>::sse_decode(deserializer));
         }
@@ -562,6 +641,18 @@ impl SseDecode for Vec<String> {
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<String>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<Vec<String>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<Vec<String>>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -603,23 +694,26 @@ impl SseDecode for Vec<u8> {
     }
 }
 
-impl SseDecode for Option<(Vec<String>, Vec<Vec<u16>>)> {
+impl SseDecode for Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
-            return Some(<(Vec<String>, Vec<Vec<u16>>)>::sse_decode(deserializer));
+            return Some(
+                <(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)>::sse_decode(deserializer),
+            );
         } else {
             return None;
         }
     }
 }
 
-impl SseDecode for (Vec<String>, Vec<Vec<u16>>) {
+impl SseDecode for (Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_field0 = <Vec<String>>::sse_decode(deserializer);
         let mut var_field1 = <Vec<Vec<u16>>>::sse_decode(deserializer);
-        return (var_field0, var_field1);
+        let mut var_field2 = <Vec<Vec<String>>>::sse_decode(deserializer);
+        return (var_field0, var_field1, var_field2);
     }
 }
 
@@ -649,6 +743,13 @@ impl SseDecode for usize {
     }
 }
 
+impl SseDecode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
+    }
+}
+
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -670,13 +771,19 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__data_handler__DataHandler_save_data_csv_impl(
+        8 => wire__crate__api__data_handler__DataHandler_save_comments_csv_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__init__init_app_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire__crate__api__data_handler__DataHandler_save_data_csv_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        10 => wire__crate__api__init__init_app_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -745,6 +852,13 @@ impl SseEncode for DataHandler {
     }
 }
 
+impl SseEncode for chrono::DateTime<chrono::Utc> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i64>::sse_encode(self.timestamp_micros(), serializer);
+    }
+}
+
 impl SseEncode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DataHandler>>
 {
@@ -756,7 +870,7 @@ impl SseEncode
     }
 }
 
-impl SseEncode for StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec> {
+impl SseEncode for StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         unimplemented!("")
@@ -777,19 +891,19 @@ impl SseEncode for bool {
     }
 }
 
-impl SseEncode for i32 {
+impl SseEncode for i64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+        serializer.cursor.write_i64::<NativeEndian>(self).unwrap();
     }
 }
 
-impl SseEncode for Vec<StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec>> {
+impl SseEncode for Vec<StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <StreamSink<i32, flutter_rust_bridge::for_generated::SseCodec>>::sse_encode(
+            <StreamSink<u16, flutter_rust_bridge::for_generated::SseCodec>>::sse_encode(
                 item, serializer,
             );
         }
@@ -802,6 +916,16 @@ impl SseEncode for Vec<String> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <String>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<Vec<String>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <Vec<String>>::sse_encode(item, serializer);
         }
     }
 }
@@ -836,21 +960,22 @@ impl SseEncode for Vec<u8> {
     }
 }
 
-impl SseEncode for Option<(Vec<String>, Vec<Vec<u16>>)> {
+impl SseEncode for Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
-            <(Vec<String>, Vec<Vec<u16>>)>::sse_encode(value, serializer);
+            <(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)>::sse_encode(value, serializer);
         }
     }
 }
 
-impl SseEncode for (Vec<String>, Vec<Vec<u16>>) {
+impl SseEncode for (Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<String>>::sse_encode(self.0, serializer);
         <Vec<Vec<u16>>>::sse_encode(self.1, serializer);
+        <Vec<Vec<String>>>::sse_encode(self.2, serializer);
     }
 }
 
@@ -880,6 +1005,13 @@ impl SseEncode for usize {
             .cursor
             .write_u64::<NativeEndian>(self as _)
             .unwrap();
+    }
+}
+
+impl SseEncode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
     }
 }
 

@@ -1,6 +1,8 @@
-import 'package:baby_monitoring_app/widgets/data_model.dart';
+import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'comment_popup.dart';
 
@@ -34,7 +36,7 @@ class GraphWidgetState extends State<GraphWidget> {
   late TooltipBehavior _tooltipBehavior; // controller for interacting with plot
   late DateTimeAxis
       _xAxis; // the x axis here is created when the state is created since it will be the same for any type of plot
-  late RustStreamSink<int>?
+  late Stream<int>?
       dataStream; // if the plot is live this is the data source
   late DateTimeAxisController
       axisController; // controller to retrieve information about the x axis
@@ -74,8 +76,14 @@ class GraphWidgetState extends State<GraphWidget> {
       },
     );
 
-    // Initialize stream sink - get real data later
-    dataStream = widget.plotType == 's' ? null : null;
+    // Initialize data stream, if static plotting, set the data stream to null
+    if (widget.plotType != 's') {
+      // Retrieve the data handler from the app state
+      final appState = Provider.of<AppStateProvider>(context);
+      dataStream = appState.dataStreams![widget.number - 1].stream;
+    } else {
+      dataStream = null;
+    }
   }
 
   // this function builds the graph widget
@@ -102,6 +110,7 @@ class GraphWidgetState extends State<GraphWidget> {
                     // Create the expanded graph page
                     builder: (context) => ExpandedGraphPage(
                       data: widget.data,
+                      dataStream: dataStream,
                       paramName: widget.paramName,
                       lineColor: widget.lineColor,
                       annotations: annotations,
@@ -164,17 +173,19 @@ class GraphWidgetState extends State<GraphWidget> {
 // This class is for when the user wants to expand a particular graph in the list
 class ExpandedGraphPage extends StatefulWidget {
   final List<ChartData> data; // Data used for the plot
+  final Stream<int>? dataStream; // Data stream for the plot
   final String
       paramName; // the name of the parameter that is being graphed (e.g. Glucose)
   final Color lineColor; // the line color of the graph
   // This value notifier allows for the chart to dynamically update when annotations are added
-  final ValueNotifier<List<CartesianChartAnnotation>> annotations; //
+  final ValueNotifier<List<CartesianChartAnnotation>> annotations;
   final String plotType; // the plot type either 's' or 'l' for static or live
 
   // the constructor for this class
   const ExpandedGraphPage({
     super.key,
     required this.data,
+    required this.dataStream,
     required this.paramName,
     required this.lineColor,
     required this.annotations,
@@ -228,9 +239,6 @@ class ExpandedGraphPageState extends State<ExpandedGraphPage> {
         _axisController = controller;
       },
     );
-
-    // Find some way of initializing the data stream
-    dataStream = widget.plotType == 's' ? null : null;
   }
 
   // Build the widgets contained within the ExpandedGraphPage
@@ -274,7 +282,7 @@ class ExpandedGraphPageState extends State<ExpandedGraphPage> {
               },
               // Create the SfCartesianChart
               child: _createPlot(
-                  dataStream,
+                  widget.dataStream,
                   widget.lineColor,
                   widget.data,
                   _xAxis,
@@ -352,7 +360,7 @@ void _showCommentPopup(BuildContext context, ChartData dataPoint,
 // function wraps the SfCartesianChart in a StreamBuilder that handles dynamic updates to the
 // data list.
 Widget _createPlot(
-    RustStreamSink<int>? dataStream,
+    Stream<int>? dataStream,
     Color lineColor,
     List<ChartData> data,
     DateTimeAxis xAxis,
@@ -392,7 +400,7 @@ Widget _createPlot(
     return plotWidget;
   } else {
     return StreamBuilder<int>(
-        stream: dataStream!.stream, // set the data stream
+        stream: dataStream!, // set the data stream
         builder: (context, snap) {
           // whenever data is sent from rust, add it to the data list and return the plotWidget
           if (snap.hasData) {
