@@ -14,7 +14,7 @@ class StaticPlotPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the app state and static data
-    final appState = Provider.of<AppStateProvider>(context, listen: false);
+    final appState = context.read<AppStateProvider>();
     final comments = appState.staticCommentData;
     final data = appState.staticData;
     final names = appState.channelNames;

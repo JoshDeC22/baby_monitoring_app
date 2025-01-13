@@ -12,7 +12,7 @@ class LivePlotPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the app state and graph names
-    final appState = Provider.of<AppStateProvider>(context, listen: false);
+    final appState = context.read<AppStateProvider>();
     final channelNames = appState.channelNames;
 
     return Scaffold(
