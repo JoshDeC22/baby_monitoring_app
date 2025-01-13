@@ -12,8 +12,7 @@ use crate::frb_generated::StreamSink;
 
 #[frb(opaque)]
 pub struct DataHandler {
-    #[frb(name = "dataList")]
-    stream_sinks: Vec<StreamSink<i32>>,
+    sinks: Vec<StreamSink<i32>>,
     csv_path: String,
     writer: Option<Writer<File>>,
     num_channels: u8,
@@ -42,7 +41,7 @@ impl DataHandler {
         // Creates CSV File
         let (writer, error, current_time) = Self::create_file(&csv_path, day, num_channels);
 
-        DataHandler { stream_sinks, csv_path, writer, num_channels, current_time, day, filter_matrix, data_list, error }
+        DataHandler { sinks: stream_sinks, csv_path, writer, num_channels, current_time, day, filter_matrix, data_list, error }
     }
 
 
@@ -191,7 +190,7 @@ impl DataHandler {
                 let sum: i32 = points.iter().map(|&val| val as i32).sum();
 
                 // Send sum to Flutter via the corresponding StreamSink
-                self.stream_sinks[channel].add(sum).expect("Error streaming data")
+                self.sinks[channel].add(sum).expect("Error streaming data")
                 /*
                     Note: Once in flutter the sum will be divided by 10 to get the average.
                     This is done since stream sinks can only send i32 values.
