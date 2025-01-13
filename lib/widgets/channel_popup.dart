@@ -203,7 +203,8 @@ class ChannelPopupState extends State<ChannelPopup> {
                           numChannels: numChannels,
                           dir: _dir!,
                           filename: _filename!,
-                          isStatic: false);
+                          isStatic: false,
+                          channelNames: _channelNames);
                       appState.setDataHandler(dataHandler);
                       appState.setDataStreams(streamSinks);
 

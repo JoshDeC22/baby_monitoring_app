@@ -23,6 +23,7 @@ class HomeScreenState extends State<HomeScreen> {
   List<String> _timeStrings = []; // List of static times (if doing static plotting)
   List<Uint16List> _bitValues = []; // List of data values for each channel (if doing static plotting)
   List<List<String>> _commentData = []; // List of the comments associated with this data
+  List<String> _channelNames = []; // List of the channel names
 
   // This function builds all the widgets within the home screen
   @override
@@ -88,11 +89,12 @@ class HomeScreenState extends State<HomeScreen> {
                 DataHandler.readDataCsv(fileDirectory: filename).then(
                   (result) {
                     // Get the data and change the widget state
-                    final (timeStrings, bitValues, commentData) = result!;
+                    final (timeStrings, bitValues, commentData, channelNames) = result!;
                     setState(() {
                       _timeStrings = timeStrings;
                       _bitValues = bitValues;
                       _commentData = commentData;
+                      _channelNames = channelNames;
                     });
                   }
                 );
@@ -101,7 +103,7 @@ class HomeScreenState extends State<HomeScreen> {
                 String dir = p.dirname(filename); // get the directory of the csv file
                 String name = p.basename(filename); // get the base file name of the csv file
 
-                DataHandler dataHandler = DataHandler(streamSinks: [], numChannels: 0, dir: dir, filename: name, isStatic: true);
+                DataHandler dataHandler = DataHandler(streamSinks: [], numChannels: 0, dir: dir, filename: name, isStatic: true, channelNames: null);
                 appState.setDataHandler(dataHandler);
 
                 // Add the data to the app state
@@ -109,6 +111,9 @@ class HomeScreenState extends State<HomeScreen> {
 
                 // Add the comments to the app state
                 appState.setStaticCommentData(_commentData);
+
+                // Add the channel names to the app state
+                appState.setChannelNames(_channelNames);
 
                 // Navigate to the static plot page
                 Navigator.push(

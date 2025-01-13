@@ -268,6 +268,7 @@ fn wire__crate__api__data_handler__DataHandler_new_impl(
             let api_dir = <String>::sse_decode(&mut deserializer);
             let api_filename = <String>::sse_decode(&mut deserializer);
             let api_is_static = <bool>::sse_decode(&mut deserializer);
+            let api_channel_names = <Option<Vec<String>>>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
                 let output_ok = Result::<_, ()>::Ok(crate::api::data_handler::DataHandler::new(
@@ -276,6 +277,7 @@ fn wire__crate__api__data_handler__DataHandler_new_impl(
                     api_dir,
                     api_filename,
                     api_is_static,
+                    api_channel_names,
                 ))?;
                 Ok(output_ok)
             })())
@@ -694,12 +696,14 @@ impl SseDecode for Vec<u8> {
     }
 }
 
-impl SseDecode for Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)> {
+impl SseDecode for Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>, Vec<String>)> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(
-                <(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)>::sse_decode(deserializer),
+                <(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>, Vec<String>)>::sse_decode(
+                    deserializer,
+                ),
             );
         } else {
             return None;
@@ -707,13 +711,25 @@ impl SseDecode for Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)> {
     }
 }
 
-impl SseDecode for (Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>) {
+impl SseDecode for Option<Vec<String>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<Vec<String>>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for (Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>, Vec<String>) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_field0 = <Vec<String>>::sse_decode(deserializer);
         let mut var_field1 = <Vec<Vec<u16>>>::sse_decode(deserializer);
         let mut var_field2 = <Vec<Vec<String>>>::sse_decode(deserializer);
-        return (var_field0, var_field1, var_field2);
+        let mut var_field3 = <Vec<String>>::sse_decode(deserializer);
+        return (var_field0, var_field1, var_field2, var_field3);
     }
 }
 
@@ -960,22 +976,35 @@ impl SseEncode for Vec<u8> {
     }
 }
 
-impl SseEncode for Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)> {
+impl SseEncode for Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>, Vec<String>)> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
-            <(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)>::sse_encode(value, serializer);
+            <(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>, Vec<String>)>::sse_encode(
+                value, serializer,
+            );
         }
     }
 }
 
-impl SseEncode for (Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>) {
+impl SseEncode for Option<Vec<String>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <Vec<String>>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for (Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>, Vec<String>) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<String>>::sse_encode(self.0, serializer);
         <Vec<Vec<u16>>>::sse_encode(self.1, serializer);
         <Vec<Vec<String>>>::sse_encode(self.2, serializer);
+        <Vec<String>>::sse_encode(self.3, serializer);
     }
 }
 

@@ -1,6 +1,8 @@
 // live_plot_page.dart
+import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../utils/data_model.dart';
 import '../widgets/graph.dart';
 
@@ -10,6 +12,10 @@ class StaticPlotPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the app state and static data
+    final appState = Provider.of<AppStateProvider>(context);
+    
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0), 
@@ -66,36 +72,3 @@ class StaticPlotPage extends StatelessWidget {
     );
   }
 }
- void _showPopupMenu(BuildContext context) async {
-    await showMenu<String>(
-      context: context,
-      position: RelativeRect.fromLTRB(200.0, 80.0, 0.0, 0.0), //IconButton position
-      items: [
-        PopupMenuItem<String>(
-          value: 'past_recordings',
-          onTap: () {
-            Navigator.pushNamed(context, '/pastRecordings'); // Navigation to past recordings
-          },
-          child: 
-          const Text('Go to past recordings',
-          textAlign: TextAlign.center, 
-          style: TextStyle(fontSize: 18), 
-          ),
-        ),
-      ],
-      elevation: 8.0,
-    );
-  }
-
-
-final List<ChartData> glucoseData = [
-  ChartData(DateTime.now(), 4),
-  ChartData(DateTime.now().add(const Duration(minutes: 1)), 5),
-  ChartData(DateTime.now().add(const Duration(minutes: 2)), 4),
-  ChartData(DateTime.now().add(const Duration(minutes: 3)), 5),
-];
-
-final List<ChartData> lactateData = [
-  ChartData(DateTime.now(), 1),
-  ChartData(DateTime.now().add(const Duration(minutes: 1)), 1),
-];

@@ -96,12 +96,13 @@ abstract class RustLibApi extends BaseApi {
       required int numChannels,
       required String dir,
       required String filename,
-      required bool isStatic});
+      required bool isStatic,
+      List<String>? channelNames});
 
   Future<void> crateApiDataHandlerDataHandlerProcess(
       {required DataHandler that, required List<int> bytes});
 
-  Future<(List<String>, List<Uint16List>, List<List<String>>)?>
+  Future<(List<String>, List<Uint16List>, List<List<String>>, List<String>)?>
       crateApiDataHandlerDataHandlerReadDataCsv(
           {required String fileDirectory});
 
@@ -250,7 +251,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       required int numChannels,
       required String dir,
       required String filename,
-      required bool isStatic}) {
+      required bool isStatic,
+      List<String>? channelNames}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -259,6 +261,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(dir, serializer);
         sse_encode_String(filename, serializer);
         sse_encode_bool(isStatic, serializer);
+        sse_encode_opt_list_String(channelNames, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
       },
       codec: SseCodec(
@@ -267,7 +270,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kCrateApiDataHandlerDataHandlerNewConstMeta,
-      argValues: [streamSinks, numChannels, dir, filename, isStatic],
+      argValues: [
+        streamSinks,
+        numChannels,
+        dir,
+        filename,
+        isStatic,
+        channelNames
+      ],
       apiImpl: this,
     ));
   }
@@ -275,7 +285,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiDataHandlerDataHandlerNewConstMeta =>
       const TaskConstMeta(
         debugName: "DataHandler_new",
-        argNames: ["streamSinks", "numChannels", "dir", "filename", "isStatic"],
+        argNames: [
+          "streamSinks",
+          "numChannels",
+          "dir",
+          "filename",
+          "isStatic",
+          "channelNames"
+        ],
       );
 
   @override
@@ -307,7 +324,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<(List<String>, List<Uint16List>, List<List<String>>)?>
+  Future<(List<String>, List<Uint16List>, List<List<String>>, List<String>)?>
       crateApiDataHandlerDataHandlerReadDataCsv(
           {required String fileDirectory}) {
     return handler.executeNormal(NormalTask(
@@ -319,7 +336,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData:
-            sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string,
+            sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string,
         decodeErrorData: null,
       ),
       constMeta: kCrateApiDataHandlerDataHandlerReadDataCsvConstMeta,
@@ -490,11 +507,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   (
     List<String>,
     List<Uint16List>,
-    List<List<String>>
-  ) dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    List<List<String>>,
+    List<String>
+  ) dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as (List<String>, List<Uint16List>, List<List<String>>);
+    return raw as (
+      List<String>,
+      List<Uint16List>,
+      List<List<String>>,
+      List<String>
+    );
   }
 
   @protected
@@ -557,29 +580,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   (
     List<String>,
     List<Uint16List>,
-    List<List<String>>
-  )? dco_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    List<List<String>>,
+    List<String>
+  )? dco_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null
         ? null
-        : dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+        : dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
             raw);
   }
 
   @protected
-  (List<String>, List<Uint16List>, List<List<String>>)
-      dco_decode_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          dynamic raw) {
+  List<String>? dco_decode_opt_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_list_String(raw);
+  }
+
+  @protected
+  (
+    List<String>,
+    List<Uint16List>,
+    List<List<String>>,
+    List<String>
+  ) dco_decode_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+      dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 3) {
-      throw Exception('Expected 3 elements, got ${arr.length}');
+    if (arr.length != 4) {
+      throw Exception('Expected 4 elements, got ${arr.length}');
     }
     return (
       dco_decode_list_String(arr[0]),
       dco_decode_list_list_prim_u_16_strict(arr[1]),
       dco_decode_list_list_String(arr[2]),
+      dco_decode_list_String(arr[3]),
     );
   }
 
@@ -681,11 +716,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   (
     List<String>,
     List<Uint16List>,
-    List<List<String>>
-  ) sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    List<List<String>>,
+    List<String>
+  ) sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    return (sse_decode_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
         deserializer));
   }
 
@@ -777,13 +813,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   (
     List<String>,
     List<Uint16List>,
-    List<List<String>>
-  )? sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    List<List<String>>,
+    List<String>
+  )? sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
-      return (sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+      return (sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
           deserializer));
     } else {
       return null;
@@ -791,14 +828,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  (List<String>, List<Uint16List>, List<List<String>>)
-      sse_decode_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          SseDeserializer deserializer) {
+  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_list_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  (
+    List<String>,
+    List<Uint16List>,
+    List<List<String>>,
+    List<String>
+  ) sse_decode_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_field0 = sse_decode_list_String(deserializer);
     var var_field1 = sse_decode_list_list_prim_u_16_strict(deserializer);
     var var_field2 = sse_decode_list_list_String(deserializer);
-    return (var_field0, var_field1, var_field2);
+    var var_field3 = sse_decode_list_String(deserializer);
+    return (var_field0, var_field1, var_field2, var_field3);
   }
 
   @protected
@@ -909,11 +962,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          (List<String>, List<Uint16List>, List<List<String>>) self,
+      sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+          (
+            List<String>,
+            List<Uint16List>,
+            List<List<String>>,
+            List<String>
+          ) self,
           SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    sse_encode_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
         self, serializer);
   }
 
@@ -998,27 +1056,49 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          (List<String>, List<Uint16List>, List<List<String>>)? self,
+      sse_encode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+          (
+            List<String>,
+            List<Uint16List>,
+            List<List<String>>,
+            List<String>
+          )? self,
           SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     sse_encode_bool(self != null, serializer);
     if (self != null) {
-      sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+      sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
           self, serializer);
     }
   }
 
   @protected
+  void sse_encode_opt_list_String(
+      List<String>? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_list_String(self, serializer);
+    }
+  }
+
+  @protected
   void
-      sse_encode_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          (List<String>, List<Uint16List>, List<List<String>>) self,
+      sse_encode_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+          (
+            List<String>,
+            List<Uint16List>,
+            List<List<String>>,
+            List<String>
+          ) self,
           SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_String(self.$1, serializer);
     sse_encode_list_list_prim_u_16_strict(self.$2, serializer);
     sse_encode_list_list_String(self.$3, serializer);
+    sse_encode_list_String(self.$4, serializer);
   }
 
   @protected

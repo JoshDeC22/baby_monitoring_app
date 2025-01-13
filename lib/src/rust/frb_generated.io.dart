@@ -61,8 +61,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (
     List<String>,
     List<Uint16List>,
-    List<List<String>>
-  ) dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    List<List<String>>,
+    List<String>
+  ) dco_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
       dynamic raw);
 
   @protected
@@ -96,14 +97,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (
     List<String>,
     List<Uint16List>,
-    List<List<String>>
-  )? dco_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    List<List<String>>,
+    List<String>
+  )? dco_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
       dynamic raw);
 
   @protected
-  (List<String>, List<Uint16List>, List<List<String>>)
-      dco_decode_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          dynamic raw);
+  List<String>? dco_decode_opt_list_String(dynamic raw);
+
+  @protected
+  (
+    List<String>,
+    List<Uint16List>,
+    List<List<String>>,
+    List<String>
+  ) dco_decode_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+      dynamic raw);
 
   @protected
   int dco_decode_u_16(dynamic raw);
@@ -157,8 +166,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (
     List<String>,
     List<Uint16List>,
-    List<List<String>>
-  ) sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    List<List<String>>,
+    List<String>
+  ) sse_decode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
       SseDeserializer deserializer);
 
   @protected
@@ -194,14 +204,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (
     List<String>,
     List<Uint16List>,
-    List<List<String>>
-  )? sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
+    List<List<String>>,
+    List<String>
+  )? sse_decode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
       SseDeserializer deserializer);
 
   @protected
-  (List<String>, List<Uint16List>, List<List<String>>)
-      sse_decode_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          SseDeserializer deserializer);
+  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
+
+  @protected
+  (
+    List<String>,
+    List<Uint16List>,
+    List<List<String>>,
+    List<String>
+  ) sse_decode_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+      SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_16(SseDeserializer deserializer);
@@ -257,8 +275,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
-      sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          (List<String>, List<Uint16List>, List<List<String>>) self,
+      sse_encode_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+          (
+            List<String>,
+            List<Uint16List>,
+            List<List<String>>,
+            List<String>
+          ) self,
           SseSerializer serializer);
 
   @protected
@@ -296,14 +319,27 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
-      sse_encode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          (List<String>, List<Uint16List>, List<List<String>>)? self,
+      sse_encode_opt_box_autoadd_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+          (
+            List<String>,
+            List<Uint16List>,
+            List<List<String>>,
+            List<String>
+          )? self,
           SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);
+
+  @protected
   void
-      sse_encode_record_list_string_list_list_prim_u_16_strict_list_list_string(
-          (List<String>, List<Uint16List>, List<List<String>>) self,
+      sse_encode_record_list_string_list_list_prim_u_16_strict_list_list_string_list_string(
+          (
+            List<String>,
+            List<Uint16List>,
+            List<List<String>>,
+            List<String>
+          ) self,
           SseSerializer serializer);
 
   @protected

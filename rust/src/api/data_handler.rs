@@ -17,6 +17,7 @@ pub struct DataHandler {
     csv_path: String,
     writer: Option<Writer<File>>,
     num_channels: u8,
+    channel_names: Option<Vec<String>>,
     current_time: DateTime<Utc>,
     day: u8,
     
@@ -28,7 +29,7 @@ pub struct DataHandler {
 impl DataHandler {
     #[frb(sync)]
     // Constructor of the DataHandler Class
-    pub fn new(stream_sinks: Vec<StreamSink<u16>>, num_channels: u8, dir: String, filename: String, is_static: bool) -> Self {
+    pub fn new(stream_sinks: Vec<StreamSink<u16>>, num_channels: u8, dir: String, filename: String, is_static: bool, channel_names: Option<Vec<String>>) -> Self {
         // Create empty arrays to hold the returned data and byte array
         let data_list: Vec<u16> = Vec::with_capacity(num_channels as usize);
         let filter_matrix: Vec<Vec<u16>> = vec![Vec::new(); num_channels as usize];
@@ -45,14 +46,15 @@ impl DataHandler {
         let current_time: DateTime<Utc>;
 
         if !is_static {
-            (writer, error, current_time) = Self::create_file(&csv_path, day, num_channels);
+            let names: Vec<String> = channel_names.clone().expect("");
+            (writer, error, current_time) = Self::create_file(&csv_path, day, num_channels, names);
         } else {
             error = false;
             current_time = Utc::now();
             writer = None;
         }
 
-        DataHandler { stream_sinks, csv_path, writer, num_channels, current_time, day, filter_matrix, data_list, error }
+        DataHandler { stream_sinks, csv_path, writer, num_channels, channel_names, current_time, day, filter_matrix, data_list, error }
     }
 
 
@@ -63,7 +65,7 @@ impl DataHandler {
         - Adds a Header in the CSV File with the Date and the Number of Channels.
         - Returns a Writer Object for the Created File, A boolean value indicating if an Error has occured, and the Current Date and Time the file was created.
     */
-    fn create_file(csv_path: &String, day: u8, num_channels: u8) -> (Option<Writer<File>>, bool, DateTime<Utc>) {
+    fn create_file(csv_path: &String, day: u8, num_channels: u8, channel_names: Vec<String>) -> (Option<Writer<File>>, bool, DateTime<Utc>) {
         let csv_name = format!("{}_{}.csv", csv_path, day); // Path to the CSV File
         let current_time = Utc::now();               // Get the Current Time
 
@@ -98,8 +100,8 @@ impl DataHandler {
         // The Following Code Creates the Header of the CSV File
         // Reformats the Current Time to give Year, Month, Date
         let mut header:Vec<String> = vec![current_time.format("%Y-%m-%d").to_string()]; 
-        for i in 1..=num_channels {
-            header.push(format!(" Channel {}", i));
+        for name in channel_names {
+            header.push(name);
         }
         if let Err(_) = writer.write_record(header) {
             return (None, true, current_time)
@@ -120,7 +122,7 @@ impl DataHandler {
     fn update_file(&mut self) -> Result<(), Box<dyn std::error::Error>>{
         self.day += 1; // Increments the Current Day by 1
         // Creates a New CSV File for the Next Day
-        let (writer, error, current_time) = Self::create_file(&self.csv_path, self.day, self.num_channels);
+        let (writer, error, current_time) = Self::create_file(&self.csv_path, self.day, self.num_channels, self.channel_names.clone().expect(""));
 
         // Updates the Current_Time and Writer Object
         if !error {
@@ -264,14 +266,14 @@ impl DataHandler {
         - comment_list is a Vector containing Comments made on the Same Day as the File and their Time Stamps
 
         E.g. 
-        return [ time_list , data_list , comment_list ]
+        return [ time_list , data_list , comment_list , channel_names ]
         time_list = [14:18:46.677, 14:18:46.782, 14:18:46.887, 14:18:46.989, 14:18:47.094]
         data_list = [ [Channel 1 Values] , [Channel 2 Values] ]
                   = [ [ 13, 9, 5, 7, 8 ] , [ 3, 6, 11, 8, 1 ] ]
 
         comment_list = [ 14:18:46, "Glucose Spike" ]
      */
-    pub fn read_data_csv(mut file_directory: String) -> Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>)> {
+    pub fn read_data_csv(mut file_directory: String) -> Option<(Vec<String>, Vec<Vec<u16>>, Vec<Vec<String>>, Vec<String>)> {
         // Open the CSV File and create the Reader
         let file = match File::open(&file_directory) {
             Ok(file) => file,
@@ -284,12 +286,14 @@ impl DataHandler {
         // Creates time_list. time_list stores all the time points refering to when each Channel Value was Collected
         let mut time_list: Vec<String> = Vec::new();
         // Creates data_list. data_list is a Vector containg a multiple Vectors of Channel Values. One for each Channel
-        let headers = match reader.headers() {
-            Ok(headers) => headers,
+        let mut headers: Vec<String> = match reader.headers() {
+            Ok(headers) => headers.iter().map(|name| String::from(name)).collect(),
             Err(_) => return None,
         };
 
-        let mut data_list: Vec<Vec<u16>> = vec![Vec::new(); headers.len() - 1];
+        headers.remove(0);
+
+        let mut data_list: Vec<Vec<u16>> = vec![Vec::new(); headers.len()];
     
         // Loop through each Line in the CSV File
         for result in reader.records() {
@@ -332,7 +336,7 @@ impl DataHandler {
         // Open the comment CSV File and create the Reader
         let comment_file = match File::open(file_directory) {
             Ok(comment_file) => comment_file,
-            Err(_) => return Some((time_list, data_list, vec![])),
+            Err(_) => return Some((time_list, data_list, vec![], headers)),
         };
 
         // Create the Reader Object for the comment CSV file
@@ -369,7 +373,7 @@ impl DataHandler {
         let comment_list: Vec<Vec<String>> = vec![timestamps, comments];
 
         // Return data_list
-        return Some((time_list, data_list, comment_list));
+        return Some((time_list, data_list, comment_list, headers));
     
     }
 

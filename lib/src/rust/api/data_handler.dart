@@ -23,17 +23,20 @@ abstract class DataHandler implements RustOpaqueInterface {
           required int numChannels,
           required String dir,
           required String filename,
-          required bool isStatic}) =>
+          required bool isStatic,
+          List<String>? channelNames}) =>
       RustLib.instance.api.crateApiDataHandlerDataHandlerNew(
           streamSinks: streamSinks,
           numChannels: numChannels,
           dir: dir,
           filename: filename,
-          isStatic: isStatic);
+          isStatic: isStatic,
+          channelNames: channelNames);
 
   Future<void> process({required List<int> bytes});
 
-  static Future<(List<String>, List<Uint16List>, List<List<String>>)?>
+  static Future<
+          (List<String>, List<Uint16List>, List<List<String>>, List<String>)?>
       readDataCsv({required String fileDirectory}) =>
           RustLib.instance.api.crateApiDataHandlerDataHandlerReadDataCsv(
               fileDirectory: fileDirectory);
