@@ -35,7 +35,8 @@ main() {
                 data: dummyData,
                 paramName: 'glucose',
                 lineColor: Colors.green,
-                plotType: 's'),
+                plotType: 's',
+                commentData: []),
           ),
         ),
       );
@@ -61,7 +62,8 @@ main() {
                 data: dummyData,
                 paramName: 'glucose',
                 lineColor: Colors.green,
-                plotType: 's'),
+                plotType: 's',
+                commentData: []),
           ),
         ),
       );
@@ -102,7 +104,8 @@ main() {
                 data: dummyData,
                 paramName: 'glucose',
                 lineColor: Colors.green,
-                plotType: 's'),
+                plotType: 's',
+                commentData: []),
           ),
         ),
       );
@@ -136,7 +139,7 @@ main() {
       await touch1.moveBy(const Offset(-15, 0));
       await touch2.moveBy(const Offset(15, 0));
       await tester.pumpAndSettle();
-      
+
       // Get Current Visible Axis
       DateTime currVisibleMaximum = axisController.visibleMaximum as DateTime;
       DateTime currVisibleMinimum = axisController.visibleMinimum as DateTime;
@@ -153,14 +156,14 @@ main() {
       // Get Current Visible Axis
       currVisibleMaximum = axisController.visibleMaximum as DateTime;
       currVisibleMinimum = axisController.visibleMinimum as DateTime;
-      
+
       // Current Zoom Should be bigger once Zoomed Out
-      expect(currVisibleMaximum.difference(currVisibleMinimum), greaterThan(zoom));
+      expect(
+          currVisibleMaximum.difference(currVisibleMinimum), greaterThan(zoom));
 
       // End Gestures
       await touch1.cancel();
       await touch2.cancel();
-
     });
 
     // Comment Test
@@ -175,7 +178,8 @@ main() {
                 data: dummyData,
                 paramName: 'lactate',
                 lineColor: Colors.red,
-                plotType: 's'),
+                plotType: 's',
+                commentData: []),
           ),
         ),
       );
@@ -215,5 +219,8 @@ main() {
       // Check Created Comment
       expect(find.text('Dummy Comment'), findsOneWidget);
     });
+
+    // Backend Test
+    testWidgets("The Backend should return", (WidgetTester tester) async {});
   });
 }
