@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_classic/flutter_blue_classic.dart';
 import 'package:provider/provider.dart';
 
+/* Reference 2 - taken from https://pub.dev/packages/bluetooth_classic/example */
 // This class is essentially the list of bluetooth classic devices that the android tablet can detect
 class BluetoothClassicListPage extends StatefulWidget {
   const BluetoothClassicListPage({Key? key}) : super(key: key);
@@ -125,3 +126,4 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
     );
   }
 }
+/* end of reference 2 */

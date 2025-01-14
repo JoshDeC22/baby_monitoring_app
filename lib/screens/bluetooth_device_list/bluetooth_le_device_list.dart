@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 
+/* Reference 1 - taken from https://pub.dev/packages/flutter_blue_plus/example */
 // This is the class that when instantiated scans for bluetooth low energy devices and lists any that are found.
 // Since this is a StatefulWidget, any changes to the _results field in the state class will result in a UI update.
 class BluetoothLEDevicePage extends StatefulWidget {
@@ -104,3 +105,4 @@ class _BluetoothLEDeviceState extends State<BluetoothLEDevicePage> {
     );
   }
 }
+/* end of reference */

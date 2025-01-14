@@ -126,43 +126,46 @@ class ChannelPopupState extends State<ChannelPopup> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Make a ListView for all the channel names
-              ListView.builder(
-                itemCount: _channelNames.length +
-                    (_addingName
-                        ? 1
-                        : 0), // number of items in the ListView (add 1 if adding a channel name)
-                // build the ListView
-                itemBuilder: (context, index) {
-                  // If adding a channel name, make a textbox appear at the bottom of the list
-                  if (_addingName && index == _channelNames.length) {
-                    return TextField(
-                      controller: _controller, // controller for the text field
-                      decoration: InputDecoration(
-                        labelText: "Enter channel name...",
-                        border: OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          // Create the button to submit the channel name to be added
-                          onPressed: () {
-                            // if the controller is not empty, add the channel name to the channel name list and to the ListView
-                            if (_controller.text.isNotEmpty) {
-                              setState(() {
-                                _channelNames.add(_controller
-                                    .text); // add the new name to the channel name list
-                                _addingName = false; // No longer adding a name
-                                _controller
-                                    .clear(); // clear the controller for reuse
-                              });
-                            }
-                          },
-                          icon: Icon(Icons
-                              .check), // set the icon of the button to a check mark
+              SizedBox(
+                height: 300,
+                // Make a ListView for all the channel names
+                child: ListView.builder(
+                  itemCount: _channelNames.length +
+                      (_addingName
+                          ? 1
+                          : 0), // number of items in the ListView (add 1 if adding a channel name)
+                  // build the ListView
+                  itemBuilder: (context, index) {
+                    // If adding a channel name, make a textbox appear at the bottom of the list
+                    if (_addingName && index == _channelNames.length) {
+                      return TextField(
+                        controller: _controller, // controller for the text field
+                        decoration: InputDecoration(
+                          labelText: "Enter channel name...",
+                          border: OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            // Create the button to submit the channel name to be added
+                            onPressed: () {
+                              // if the controller is not empty, add the channel name to the channel name list and to the ListView
+                              if (_controller.text.isNotEmpty) {
+                                setState(() {
+                                  _channelNames.add(_controller
+                                      .text); // add the new name to the channel name list
+                                  _addingName = false; // No longer adding a name
+                                  _controller
+                                      .clear(); // clear the controller for reuse
+                                });
+                              }
+                            },
+                            icon: Icon(Icons
+                                .check), // set the icon of the button to a check mark
+                          ),
                         ),
-                      ),
-                    );
-                  }
-                  return ListTile(title: Text(_channelNames[index]));
-                },
+                      );
+                    }
+                    return ListTile(title: Text(_channelNames[index]));
+                  },
+                ),
               ),
               SizedBox(height: 10),
               // Create the button to add a channel name and the button to close the popup.
