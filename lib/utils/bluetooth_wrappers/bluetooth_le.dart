@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:baby_monitoring_app/screens/first_screen.dart';
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
 import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/bluetooth_wrappers/bluetooth_wrapper_interface.dart';
@@ -20,27 +21,33 @@ class BluetoothLEWrapper implements BluetoothWrapper {
     final appState = Provider.of<AppStateProvider>(context);
     _dataHandler = appState.dataHandler!;
 
-    _connect();
+    _connect(context);
   }
 
   // This function ensures that whenever data is streamed to the device, the code updates.
-  Future<void> _connect() async {
+  Future<void> _connect(BuildContext context) async {
     await _device.connect();
     List<BluetoothService> services = await _device.discoverServices();
     _characteristic = services[0].characteristics[0];
     await _characteristic.setNotifyValue(true);
-    await _readData();
+    await _readData(context);
   }
 
   // This function calls the rust code everytime data is sent to the device.
-  Future<void> _readData() async {
+  Future<void> _readData(BuildContext context) async {
     try {
       _characteristic.onValueReceived.listen((data) {
         _dataHandler.process(bytes: data);
       });
     }
     catch (e) {
-      print(e);
+      // clear the app state and navigate back to the home screen
+      final appState = context.read<AppStateProvider>();
+      appState.clearAppState();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     }
   }
 

@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   await RustLib.init();
+  // Build the app with a ChangeNotifierProvider to manage the app state and ensure that the state is shared among all
+  // widgets
   runApp(
     ChangeNotifierProvider(create: (context) => AppStateProvider(), child: const MyApp())
   );
@@ -18,10 +20,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Build the app with a theme and open up to the home screen
     return MaterialApp(
       title: 'Graph Widgets',
       theme: ThemeData(
-        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: HomeScreen(), //screen for selecting what to display (switch this to static plot page test to see what the plots look like)

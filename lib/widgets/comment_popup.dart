@@ -39,6 +39,7 @@ class CommentPopupState extends State<CommentPopup> {
   // This function builds the popup
   @override
   Widget build(BuildContext context) {
+    // The majority of this is just formatting
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), // Shape of the popup
       child: Padding(
