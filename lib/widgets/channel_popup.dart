@@ -46,10 +46,10 @@ class ChannelPopupState extends State<ChannelPopup> {
 
   // This function prompts the user to select a directory and set a filename for the csv files where the data
   // from the bluetooth devices will be stored
-  void _getPath() {
+  Future<void> _getPath() async {
     // get the directory and filename
-    _getDir();
-    _getFilename();
+    await _getDir();
+    await _getFilename();
 
     // check to make sure user has selected a directory/filename
     if (_dir == null || _filename == null) {
@@ -61,29 +61,11 @@ class ChannelPopupState extends State<ChannelPopup> {
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     }
-
-    final appState = context.read<AppStateProvider>();
-
-    // get the number of channels and create a list of stream sinks for each
-    int numChannels = _channelNames.length;
-    List<RustStreamSink<int>> streamSinks =
-        List.filled(numChannels, RustStreamSink<int>());
-
-    // Create the data handler object and add it to the app state
-    DataHandler dataHandler = DataHandler(
-        streamSinks: streamSinks,
-        numChannels: numChannels,
-        dir: _dir!,
-        filename: _filename!,
-        isStatic: false,
-        channelNames: _channelNames);
-    appState.setDataHandler(dataHandler);
-    appState.setDataStreams(streamSinks);
   }
 
   // This function prompts the user to select a directory to store the csv files where the data from the
   // bluetooth devices will be saved
-  void _getDir() {
+  Future<void> _getDir() async {
     // get the user to select a directory
     FilePicker.platform.getDirectoryPath().then((dir) {
       if (dir != null) {
@@ -96,7 +78,7 @@ class ChannelPopupState extends State<ChannelPopup> {
 
   // This function prompts the user to type a file name for the csv files where the data from the
   // bluetooth devices will be saved
-  void _getFilename() {
+  Future<void> _getFilename() async {
     // Get the user to enter a filename
     TextEditingController controller = TextEditingController();
     showDialog<String>(
@@ -208,17 +190,30 @@ class ChannelPopupState extends State<ChannelPopup> {
                   ),
                   // Create the button to close the popup
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // update the app state and add the new channel list
                       final appState = context.read<AppStateProvider>();
                       appState.setChannelNames(_channelNames);
 
                       // show the popup to get the directory and set the filename for csv files where the
                       // data from the bluetooth device will be stored and then create the data handler
-                      _getPath();
+                      await _getPath();
 
-                      // close the popup
-                      Navigator.pop(context);
+                      // get the number of channels and create a list of stream sinks for each
+                      int numChannels = _channelNames.length;
+                      List<RustStreamSink<int>> streamSinks =
+                          List.filled(numChannels, RustStreamSink<int>());
+
+                      // Create the data handler object and add it to the app state
+                      DataHandler dataHandler = DataHandler(
+                          streamSinks: streamSinks,
+                          numChannels: numChannels,
+                          dir: _dir!,
+                          filename: _filename!,
+                          isStatic: false,
+                          channelNames: _channelNames);
+                      appState.setDataHandler(dataHandler);
+                      appState.setDataStreams(streamSinks);
 
                       // Navigate to either the bluetooth classic or LE device list
                       if (widget.bluetoothClassic) {
@@ -235,6 +230,9 @@ class ChannelPopupState extends State<ChannelPopup> {
                             MaterialPageRoute(
                                 builder: (context) => BluetoothLEDevicePage()));
                       }
+
+                      // close the popup
+                      Navigator.pop(context);
                     },
                     child: Text("Close"),
                   )
