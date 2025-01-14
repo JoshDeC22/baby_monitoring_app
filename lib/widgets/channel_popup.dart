@@ -79,22 +79,6 @@ class ChannelPopupState extends State<ChannelPopup> {
         channelNames: _channelNames);
     appState.setDataHandler(dataHandler);
     appState.setDataStreams(streamSinks);
-
-    // Navigate to either the bluetooth classic or LE device list
-    if (widget.bluetoothClassic) {
-      // Navigate to bluetooth classic device list
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BluetoothClassicListPage()),
-      );
-    } else {
-      // Navigate to bluetooth LE device list
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BluetoothLEDevicePage()));
-    }
   }
 
   // This function prompts the user to select a directory to store the csv files where the data from the
@@ -235,6 +219,22 @@ class ChannelPopupState extends State<ChannelPopup> {
 
                       // close the popup
                       Navigator.pop(context);
+
+                      // Navigate to either the bluetooth classic or LE device list
+                      if (widget.bluetoothClassic) {
+                        // Navigate to bluetooth classic device list
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BluetoothClassicListPage()),
+                        );
+                      } else {
+                        // Navigate to bluetooth LE device list
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BluetoothLEDevicePage()));
+                      }
                     },
                     child: Text("Close"),
                   )
