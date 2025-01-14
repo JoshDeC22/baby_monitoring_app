@@ -18,10 +18,11 @@ pub struct DataHandler {
     writer: Option<Writer<File>>,
     num_channels: u8,
     channel_names: Option<Vec<String>>,
-    current_time: DateTime<Utc>,
+    
     day: u8,
     
     filter_matrix: Vec<Vec<u16>>,
+    current_time: DateTime<Utc>,
     pub data_list: Vec<u16>,
     pub error: bool
 }
@@ -47,14 +48,14 @@ impl DataHandler {
 
         if !is_static {
             let names: Vec<String> = channel_names.clone().expect("");
-            (writer, error, current_time) = Self::create_file(&csv_path, day, num_channels, names);
+            (writer, error, current_time) = Self::create_file(&csv_path, day, names);
         } else {
             error = false;
             current_time = Utc::now();
             writer = None;
         }
 
-        DataHandler { stream_sinks, csv_path, writer, num_channels, channel_names, current_time, day, filter_matrix, data_list, error }
+        DataHandler { stream_sinks, csv_path, writer, num_channels, channel_names, day, filter_matrix, current_time, data_list, error }
     }
 
 
@@ -65,7 +66,7 @@ impl DataHandler {
         - Adds a Header in the CSV File with the Date and the Number of Channels.
         - Returns a Writer Object for the Created File, A boolean value indicating if an Error has occured, and the Current Date and Time the file was created.
     */
-    fn create_file(csv_path: &String, day: u8, num_channels: u8, channel_names: Vec<String>) -> (Option<Writer<File>>, bool, DateTime<Utc>) {
+    fn create_file(csv_path: &String, day: u8, channel_names: Vec<String>) -> (Option<Writer<File>>, bool, DateTime<Utc>) {
         let csv_name = format!("{}_{}.csv", csv_path, day); // Path to the CSV File
         let current_time = Utc::now();               // Get the Current Time
 
@@ -106,6 +107,7 @@ impl DataHandler {
         if let Err(_) = writer.write_record(header) {
             return (None, true, current_time)
         }
+        writer.flush().expect("Failed to Flush");
 
         return (Some(writer), false, current_time)
     }
@@ -122,7 +124,7 @@ impl DataHandler {
     fn update_file(&mut self) -> Result<(), Box<dyn std::error::Error>>{
         self.day += 1; // Increments the Current Day by 1
         // Creates a New CSV File for the Next Day
-        let (writer, error, current_time) = Self::create_file(&self.csv_path, self.day, self.num_channels, self.channel_names.clone().expect(""));
+        let (writer, error, current_time) = Self::create_file(&self.csv_path, self.day, self.channel_names.clone().expect(""));
 
         // Updates the Current_Time and Writer Object
         if !error {
@@ -189,7 +191,7 @@ impl DataHandler {
         This assumption is based on the fact that data_list is only sent when it has the a Data Point
         for each channel.
     */
-    async fn filter(&mut self, data_list: &Vec<u16>) -> Result<()> {
+    async fn filter(&mut self, data_list: &Vec<u16>){
         // For each Data Point, add the Data Point to its corresponding Channel Vector in the filter_matrix
         for (channel, value) in data_list.iter().enumerate() {
             self.filter_matrix[channel].push(*value);
@@ -215,7 +217,6 @@ impl DataHandler {
             self.filter_matrix = vec![Vec::new(); self.num_channels as usize];
         }
 
-        Ok(())
     }
 
 
@@ -247,9 +248,10 @@ impl DataHandler {
             // Reformats the Current Time to Give Hours, Months, Seconds.3sf
             let mut timed_record: Vec<String> = vec![current_time.format("%H:%M:%S%.3f").to_string()];
             timed_record.extend(record); // Adds a Time DataPoint to be Written alongside the Channel Values
-            
+        
             // Writes each Value in data_list into a csv file
             writer.write_record(&timed_record).expect("Error: Nothing to Write.");
+            writer.flush().expect("Failed to Flush");
 
         } else {
             println!("Error: Writer not Found.")
@@ -431,4 +433,5 @@ impl DataHandler {
 
         return Some(1);
     }
+
 }
