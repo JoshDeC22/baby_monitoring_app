@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
-import 'package:baby_monitoring_app/utils/app_state_provider.dart';
-import 'package:baby_monitoring_app/utils/bluetooth_wrapper_interface.dart';
+import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/bluetooth_wrappers/bluetooth_wrapper_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';

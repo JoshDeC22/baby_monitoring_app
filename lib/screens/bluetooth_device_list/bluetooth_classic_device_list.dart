@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:baby_monitoring_app/screens/first_screen.dart';
-import 'package:baby_monitoring_app/screens/live_plot_page.dart';
-import 'package:baby_monitoring_app/utils/app_state_provider.dart';
-import 'package:baby_monitoring_app/utils/bluetooth_classic.dart';
+import 'package:baby_monitoring_app/screens/plot_pages/live_plot_page.dart';
+import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/bluetooth_wrappers/bluetooth_classic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_classic/flutter_blue_classic.dart';
 import 'package:provider/provider.dart';
