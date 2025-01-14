@@ -99,7 +99,7 @@ class StaticPlotPageTest extends StatelessWidget {
             else if (i == 1)
               Expanded(
                 child: GraphWidget(
-                    number: 1,
+                    number: 2,
                     data: data[i],
                     paramName: names[i],
                     lineColor: Colors.green,
