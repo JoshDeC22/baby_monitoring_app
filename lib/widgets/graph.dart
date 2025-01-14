@@ -172,7 +172,7 @@ class GraphWidgetState extends State<GraphWidget> {
             builder: (BuildContext context,
                 List<CartesianChartAnnotation> annotationList, Widget? child) {
               return SizedBox(
-                height: 200, // height of the sized box
+                height: 400, // height of the sized box
                 // This GestureDetector runs whenever the plot is double clicked
                 child: GestureDetector(
                   onDoubleTapDown: (details) {
@@ -471,11 +471,15 @@ Widget _createPlot(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12), // Rounded corners
           ),
-          child: Container(
-            padding: const EdgeInsets.all(16.0), // Padding inside the card
-            height: 600, // fix
+          child: SizedBox(
+            height: 600,
             child: plotWidget,
-          )
+          ),
+          // child: Container(
+          //   padding: const EdgeInsets.all(16.0), // Padding inside the card
+          //   height: 400, // fix
+          //   child: plotWidget,
+          // )
         )
       )
     );

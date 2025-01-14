@@ -82,15 +82,15 @@ class LivePlotPage extends StatelessWidget {
         children: [
           for (int i = 0; i < channelNames.length; i++)
             if (i == 0) 
-              Expanded(
+              Flexible(
                 child: GraphWidget(number: 1, data: [], paramName: channelNames[i], lineColor: Colors.red, plotType: 's', commentData: []),
               )
             else if (i == 1)
-              Expanded(
+              Flexible(
                 child: GraphWidget(number: 1, data: [], paramName: channelNames[i], lineColor: Colors.green, plotType: 's', commentData: []),
               )
             else
-              Expanded(
+              Flexible(
                 child: GraphWidget(number: i + 1, data: [], paramName: channelNames[i], lineColor: generateRandomColor(), plotType: 's', commentData: []),
               )
         ],

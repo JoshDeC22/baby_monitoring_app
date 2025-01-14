@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: StaticPlotPageTest(), //screen for selecting what to display (switch this to static plot page test to see what the plots look like)
+      home: HomeScreen(), //screen for selecting what to display (switch this to static plot page test to see what the plots look like)
     );
   }
 }

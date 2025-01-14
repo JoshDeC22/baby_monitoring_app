@@ -31,7 +31,7 @@ class StaticPlotPageTest extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Static Blood Parameter Plot (Dummy Data)',
+          'Static Blood Parameter Plot (Demo Data)',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -45,13 +45,16 @@ class StaticPlotPageTest extends StatelessWidget {
               for (int i = 0; i < data.length; i++)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: GraphWidget(
-                    number: i + 1,
-                    data: data[i],
-                    paramName: names[i],
-                    lineColor: i == 0 ? Colors.red : Colors.green,
-                    plotType: 's',
-                    commentData: comments, // Pass comments
+                  child: SizedBox(
+                    height: 500,
+                    child: GraphWidget(
+                      number: i + 1,
+                      data: data[i],
+                      paramName: names[i],
+                      lineColor: i == 0 ? Colors.red : Colors.green,
+                      plotType: 's',
+                      commentData: comments, // Pass comments
+                    ),
                   ),
                 )
             ],
