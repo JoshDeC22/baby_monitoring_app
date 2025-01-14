@@ -1,3 +1,4 @@
+import 'package:baby_monitoring_app/screens/first_screen.dart';
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
 import 'package:baby_monitoring_app/screens/bluetooth_device_list/bluetooth_classic_device_list.dart';
 import 'package:baby_monitoring_app/screens/bluetooth_device_list/bluetooth_le_device_list.dart';
@@ -52,7 +53,47 @@ class ChannelPopupState extends State<ChannelPopup> {
 
     // check to make sure user has selected a directory/filename
     if (_dir == null || _filename == null) {
-      // TODO: Error handle
+      // clear the app state and navigate back to the home screen
+      final appState = context.read<AppStateProvider>();
+      appState.clearAppState();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    }
+
+    final appState = context.read<AppStateProvider>();
+
+    // get the number of channels and create a list of stream sinks for each
+    int numChannels = _channelNames.length;
+    List<RustStreamSink<int>> streamSinks =
+        List.filled(numChannels, RustStreamSink<int>());
+
+    // Create the data handler object and add it to the app state
+    DataHandler dataHandler = DataHandler(
+        streamSinks: streamSinks,
+        numChannels: numChannels,
+        dir: _dir!,
+        filename: _filename!,
+        isStatic: false,
+        channelNames: _channelNames);
+    appState.setDataHandler(dataHandler);
+    appState.setDataStreams(streamSinks);
+
+    // Navigate to either the bluetooth classic or LE device list
+    if (widget.bluetoothClassic) {
+      // Navigate to bluetooth classic device list
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BluetoothClassicListPage()),
+      );
+    } else {
+      // Navigate to bluetooth LE device list
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BluetoothLEDevicePage()));
     }
   }
 
@@ -191,38 +232,6 @@ class ChannelPopupState extends State<ChannelPopup> {
                       // show the popup to get the directory and set the filename for csv files where the
                       // data from the bluetooth device will be stored and then create the data handler
                       _getPath();
-
-                      // get the number of channels and create a list of stream sinks for each
-                      int numChannels = _channelNames.length;
-                      List<RustStreamSink<int>> streamSinks =
-                          List.filled(numChannels, RustStreamSink<int>());
-
-                      // Create the data handler object and add it to the app state
-                      DataHandler dataHandler = DataHandler(
-                          streamSinks: streamSinks,
-                          numChannels: numChannels,
-                          dir: _dir!,
-                          filename: _filename!,
-                          isStatic: false,
-                          channelNames: _channelNames);
-                      appState.setDataHandler(dataHandler);
-                      appState.setDataStreams(streamSinks);
-
-                      // Navigate to either the bluetooth classic or LE device list
-                      if (widget.bluetoothClassic) {
-                        // Navigate to bluetooth classic device list
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BluetoothClassicListPage()),
-                        );
-                      } else {
-                        // Navigate to bluetooth LE device list
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BluetoothLEDevicePage()));
-                      }
 
                       // close the popup
                       Navigator.pop(context);

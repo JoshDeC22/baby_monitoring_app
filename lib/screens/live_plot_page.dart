@@ -2,7 +2,6 @@
 import 'dart:math';
 
 import 'package:baby_monitoring_app/screens/first_screen.dart';
-import 'package:baby_monitoring_app/screens/static_plot_page.dart';
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +52,7 @@ class LivePlotPage extends StatelessWidget {
                   appState.clearAppState();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const StaticPlotPage()),
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
                   );
                 },
                 style: TextButton.styleFrom(
