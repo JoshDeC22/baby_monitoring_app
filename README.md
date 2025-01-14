@@ -12,3 +12,25 @@ SE for Android Status: Enforcing, version SEPF_SM-T580_8.1.0_0008
 Knox Version: 3.2 (Knox API level 26, TIMA 3.3.0)
 Security Software Version: ASKS v2.0.0, Release 200120ADP v2.0, Release 180525, SMR Apr-2020 Release R
 Android Security Patch Level: April 1, 2020
+
+
+## Prerequisites 
+Rust 
+Flutter SDK
+Android Studio and Emulator
+Flutter Rust Bridge
+
+## Setup
+1. Clone the repository
+   a.clone <repo-url>
+   b.cd baby_monitoring_app
+2. Install Flutter dependencies
+   a. flutter pub get
+3.set up flutter rust bridge
+   a.cargo install flutter_rust_bridge_codegen
+4. Run android emulator or android device
+5. Run app (flutter run)
+
+## Bluetooth types
+bluetooth low energy
+bluetooth classic
