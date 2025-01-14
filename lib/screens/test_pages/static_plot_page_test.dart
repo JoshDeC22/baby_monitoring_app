@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/graph.dart';
-import 'package:baby_monitoring_app/utils/data_wrappers/data_model.dart';
+import 'package:baby_monitoring_app/utils/data_wrappers/chart_data.dart';
 import 'package:baby_monitoring_app/utils/data_wrappers/comment_data.dart'; // Import CommentData
 import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:baby_monitoring_app/screens/plot_pages/static_plot_page.dart';

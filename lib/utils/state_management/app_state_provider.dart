@@ -1,7 +1,7 @@
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
 import 'package:baby_monitoring_app/utils/bluetooth_wrappers/bluetooth_wrapper_interface.dart';
 import 'package:baby_monitoring_app/utils/data_wrappers/comment_data.dart';
-import 'package:baby_monitoring_app/utils/data_wrappers/data_model.dart';
+import 'package:baby_monitoring_app/utils/data_wrappers/chart_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
