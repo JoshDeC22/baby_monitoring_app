@@ -136,7 +136,8 @@ class ChannelPopupState extends State<ChannelPopup> {
                     // If adding a channel name, make a textbox appear at the bottom of the list
                     if (_addingName && index == _channelNames.length) {
                       return TextField(
-                        controller: _controller, // controller for the text field
+                        controller:
+                            _controller, // controller for the text field
                         decoration: InputDecoration(
                           labelText: "Enter channel name...",
                           border: OutlineInputBorder(),
@@ -148,7 +149,8 @@ class ChannelPopupState extends State<ChannelPopup> {
                                 setState(() {
                                   _channelNames.add(_controller
                                       .text); // add the new name to the channel name list
-                                  _addingName = false; // No longer adding a name
+                                  _addingName =
+                                      false; // No longer adding a name
                                   _controller
                                       .clear(); // clear the controller for reuse
                                 });
@@ -188,6 +190,8 @@ class ChannelPopupState extends State<ChannelPopup> {
                       // show the popup to get the directory and set the filename for csv files where the
                       // data from the bluetooth device will be stored and then create the data handler
                       await _getPath();
+                      print(_filename);
+                      print(_dir);
 
                       // get the number of channels and create a list of stream sinks for each
                       int numChannels = _channelNames.length;
