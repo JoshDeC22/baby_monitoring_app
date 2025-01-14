@@ -24,12 +24,15 @@ Flutter Rust Bridge
 1. Clone the repository
    a.clone <repo-url>
    b.cd baby_monitoring_app
-2. Install Flutter dependencies
+   
+3. Install Flutter dependencies
    a. flutter pub get
+   
 3.set up flutter rust bridge
    a.cargo install flutter_rust_bridge_codegen
-4. Run android emulator or android device
-5. Run app (flutter run)
+   
+5. Run android emulator or android device
+6. Run app (flutter run)
 
 ## Bluetooth types
 bluetooth low energy
