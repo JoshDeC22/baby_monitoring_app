@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// This defines all the colors that are used in the app
 class AppColors {
   static const Color darkBlue= Color(0xFF0C345A); 
   static const Color accentColor = Color(0xFFFFAB40); 

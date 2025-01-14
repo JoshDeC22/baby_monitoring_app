@@ -1,4 +1,3 @@
-import 'package:baby_monitoring_app/screens/first_screen.dart';
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
 import 'package:baby_monitoring_app/screens/bluetooth_device_list/bluetooth_classic_device_list.dart';
 import 'package:baby_monitoring_app/screens/bluetooth_device_list/bluetooth_le_device_list.dart';
@@ -34,8 +33,8 @@ class ChannelPopupState extends State<ChannelPopup> {
   bool _addingName = false; // tracks whether a name is being added or not
   final TextEditingController _controller =
       TextEditingController(); // Controller to add names to the list
-  String? _dir;
-  String? _filename;
+  String? _dir; // This is the directory where the user wants to store the data from the bluetooth device
+  String? _filename; // This is the filename of the file that the user wants to store the data from the bluetooth device in
 
   // When the popup is closed, it also removes the controller
   @override
@@ -48,14 +47,14 @@ class ChannelPopupState extends State<ChannelPopup> {
   // from the bluetooth devices will be stored
   Future<void> _getPath() async {
     // get the directory and filename
-    final dir = await _getDir();
+    final dir = await _getDir(); // Wait for the user to choose a directory
     if (dir != null) {
       setState(() {
         _dir = dir;
       });
     }
 
-    final filename = await _getFilename();
+    final filename = await _getFilename(); // Wait for the user to choose a filename
     if (filename != null) {
       setState(() {
         _filename = "$filename.csv";
@@ -74,7 +73,7 @@ class ChannelPopupState extends State<ChannelPopup> {
   // bluetooth devices will be saved
   Future<String?> _getFilename() async {
     // Get the user to enter a filename
-    TextEditingController controller = TextEditingController();
+    TextEditingController controller = TextEditingController(); // controller for the text field
     return await showDialog<String>(
         context: context,
         builder: (BuildContext context) {
@@ -100,7 +99,7 @@ class ChannelPopupState extends State<ChannelPopup> {
               // Create the button to save the file name
               ElevatedButton(
                   onPressed: () {
-                    // update the filename if the user has entered text
+                    // update the filename if the user has entered text and close the popup
                     if (controller.text.isNotEmpty) {
                       Navigator.of(context).pop(controller.text);
                     }
@@ -114,6 +113,7 @@ class ChannelPopupState extends State<ChannelPopup> {
   // This function builds the popup/dialog
   @override
   Widget build(BuildContext context) {
+    // The majority of this is just formatting the dialogue
     return Dialog(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0)), // shape of the popup
@@ -162,7 +162,7 @@ class ChannelPopupState extends State<ChannelPopup> {
                         ),
                       );
                     }
-                    return ListTile(title: Text(_channelNames[index]));
+                    return ListTile(title: Text(_channelNames[index])); // Return each channel name as a list tile (updates every time a new name is added)
                   },
                 ),
               ),
@@ -205,6 +205,8 @@ class ChannelPopupState extends State<ChannelPopup> {
                           isStatic: false,
                           channelNames: _channelNames);
                       appState.setDataHandler(dataHandler);
+
+                      // Add the stream sinks to the app state (these will be used to retrieve data later)
                       appState.setDataStreams(streamSinks);
 
                       // close the popup

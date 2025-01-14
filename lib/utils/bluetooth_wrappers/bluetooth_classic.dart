@@ -1,3 +1,4 @@
+import 'package:baby_monitoring_app/screens/first_screen.dart';
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
 import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/bluetooth_wrappers/bluetooth_wrapper_interface.dart';
@@ -18,31 +19,44 @@ class BtClassicWrapper implements BluetoothWrapper {
     final appState = Provider.of<AppStateProvider>(context);
     _dataHandler = appState.dataHandler!;
 
-    _connect(); 
+    // Connect to the bluetooth device
+    _connect(context); 
   }
 
   // Establishes the connection to the bluetooth device
-  Future<void> _connect() async {
+  Future<void> _connect(BuildContext context) async {
     try {
       _conn = await _plugin.connect(_device.address);
       if (_conn != null) {
-        await _readData();
+        await _readData(context);
       }
     } catch (e) {
-      print(e); // Proper error handling to be implemented later
+      // clear the app state and navigate back to the home screen
+      final appState = context.read<AppStateProvider>();
+      appState.clearAppState();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     }
   }
 
   // Reads the data being sent from the bluetooth device. This function will be called everytime data is sent from
   // the sensor
-  Future<void> _readData() async {
+  Future<void> _readData(BuildContext context) async {
     try {
       _conn!.input!.listen((data) {
         _dataHandler.process(bytes: data);
       });
     }
     catch (e) {
-      print(e); // Proper error handling to be implemented later
+      // clear the app state and navigate back to the home screen
+      final appState = context.read<AppStateProvider>();
+      appState.clearAppState();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     }
   }
 

@@ -7,7 +7,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // This class contains all of the values that are contained within the app itself.
 // This includes the list of channel names and the data handler (for communication
-// with rust) 
+// with rust). This is essentially the state manager of the entire app. All widgets
+// can access the data contained within the AppStateProvider.
 class AppStateProvider with ChangeNotifier{
   List<String> _channelNames = []; // the current list of channel names
   DataHandler? _dataHandler; // the data handler

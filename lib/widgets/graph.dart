@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'comment_popup.dart';
 
+// This class is the building block of the graph page. Each channel has it's own associated graph widget.
+// It is adaptable to both static and live plotting.
 class GraphWidget extends StatefulWidget {
   final int number; // The plot number
   final List<ChartData> data; // data used for the plot
@@ -108,7 +110,7 @@ class GraphWidgetState extends State<GraphWidget> {
       final time = comment.time;
       final commentString = comment.comment;
       final bitVal = _getBitValFromTime(widget.data, time.toString());
-      final annotation = CartesianChartAnnotation(
+      final annotation = CartesianChartAnnotation( // create each annotation
         // Create the outline of the annotation
         widget: Container(
             padding: const EdgeInsets.all(5),
@@ -120,12 +122,14 @@ class GraphWidgetState extends State<GraphWidget> {
             child: Text(
               commentString,
             )),
+        // Put the annotation on the y value at the specified time
         coordinateUnit: CoordinateUnit.point,
         x: time,
         y: bitVal,
       );
       annotationList.add(annotation);
     }
+    // Create the annotation list with a ValueNotifier wrapper
     annotations = ValueNotifier(annotationList);
   }
 
@@ -171,7 +175,7 @@ class GraphWidgetState extends State<GraphWidget> {
             builder: (BuildContext context,
                 List<CartesianChartAnnotation> annotationList, Widget? child) {
               return SizedBox(
-                height: 400, // height of the sized box
+                height: 400, // height of the sized box/height of the plot
                 // This GestureDetector runs whenever the plot is double clicked
                 child: GestureDetector(
                   onDoubleTapDown: (details) {
@@ -475,11 +479,6 @@ Widget _createPlot(
             height: 600,
             child: plotWidget,
           ),
-          // child: Container(
-          //   padding: const EdgeInsets.all(16.0), // Padding inside the card
-          //   height: 400, // fix
-          //   child: plotWidget,
-          // )
         )
       )
     );
@@ -509,5 +508,6 @@ int? _getBitValFromTime(List<ChartData> data, String time) {
     }
   }
 
+  // If no data points are found, return null
   return null;
 }
