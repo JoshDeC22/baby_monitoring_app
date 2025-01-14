@@ -46,10 +46,10 @@ class ChannelPopupState extends State<ChannelPopup> {
 
   // This function prompts the user to select a directory and set a filename for the csv files where the data
   // from the bluetooth devices will be stored
-  Future<void> _getPath() async {
+  void _getPath() {
     // get the directory and filename
-    await _getDir();
-    await _getFilename();
+    _getDir();
+    _getFilename();
 
     // check to make sure user has selected a directory/filename
     if (_dir == null || _filename == null) {
@@ -65,7 +65,7 @@ class ChannelPopupState extends State<ChannelPopup> {
 
   // This function prompts the user to select a directory to store the csv files where the data from the
   // bluetooth devices will be saved
-  Future<void> _getDir() async {
+  void _getDir() {
     // get the user to select a directory
     FilePicker.platform.getDirectoryPath().then((dir) {
       if (dir != null) {
@@ -78,7 +78,7 @@ class ChannelPopupState extends State<ChannelPopup> {
 
   // This function prompts the user to type a file name for the csv files where the data from the
   // bluetooth devices will be saved
-  Future<void> _getFilename() async {
+  void _getFilename() {
     // Get the user to enter a filename
     TextEditingController controller = TextEditingController();
     showDialog<String>(
@@ -190,14 +190,14 @@ class ChannelPopupState extends State<ChannelPopup> {
                   ),
                   // Create the button to close the popup
                   ElevatedButton(
-                    onPressed: () async {
+                    onPressed: () {
                       // update the app state and add the new channel list
                       final appState = context.read<AppStateProvider>();
                       appState.setChannelNames(_channelNames);
 
                       // show the popup to get the directory and set the filename for csv files where the
                       // data from the bluetooth device will be stored and then create the data handler
-                      await _getPath();
+                      _getPath();
 
                       // get the number of channels and create a list of stream sinks for each
                       int numChannels = _channelNames.length;
