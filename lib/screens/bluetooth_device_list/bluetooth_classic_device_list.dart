@@ -25,11 +25,9 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
   StreamSubscription? _adapterSubscription; // the stream subscription for the adapter
   final Set<BluetoothDevice> _results = {}; // the results from the scan for devices
   StreamSubscription? _scanSubscription; // the stream subscription for the scan results
-  bool _isScanning = false; // tells whether the device is scanning or not
-  int? _connectingIndex; // gets the index of the device that is being connected
   StreamSubscription? _scanningSubscription; // the stream subscription for the scan
 
-  // THis function initializes the state of the page
+  // This function initializes the state of the page
   @override
   void initState() {
     super.initState();
@@ -56,7 +54,6 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
       // Check whether the scan is ongoing or not
       _scanningSubscription = _plugin.isScanning.listen((scanning) {
         if (mounted) {
-          setState(() => _isScanning = scanning);
         }
       });
     }
@@ -102,7 +99,7 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
           for (var result in results)
           // if the scan has results, list them
             ListTile(
-              title: Text(result.name ?? "Unknown Device"),
+              title: Text(result.name ?? "Unknown Device"), // Display all devices names found. (Unknown Device if Device has no name)
               subtitle: Text("(${result.address})"),
               onTap: () { // when a device is tapped, wrap the device with the BtClassicWrapper and add it to the app state
                 BtClassicWrapper device = BtClassicWrapper(result, context); // Wrap the device
@@ -118,6 +115,7 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
                 );
               },
             ),
+            // Formatting
             const Padding(
               padding: EdgeInsets.only(top: 23),
               child: Divider(),

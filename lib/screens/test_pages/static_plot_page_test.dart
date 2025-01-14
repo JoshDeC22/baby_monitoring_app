@@ -10,6 +10,7 @@ class StaticPlotPageTest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Dummy Data for Testing
     DateTime dummyTime =
         DateTime.parse('2025-01-01 11:17:00'); // Year/Month/Day
     final List<ChartData> dummyData = [
@@ -25,10 +26,12 @@ class StaticPlotPageTest extends StatelessWidget {
       ChartData(dummyTime.add(const Duration(minutes: 9)), 6),
     ];
 
+    // Dummy Variables for Testing
     final data = [dummyData, dummyData]; 
     final names = ["Glucose", "Lactate"];
     final List<CommentData> comments = []; // Initialize comments
 
+    // Formatting //
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
@@ -58,7 +61,7 @@ class StaticPlotPageTest extends StatelessWidget {
                 onPressed: () {
                   // TODO: navigate back to home
                 },
-                style: TextButton.styleFrom(
+                style: TextButton.styleFrom( // Formatting
                   backgroundColor: AppColors.palePink,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -78,6 +81,8 @@ class StaticPlotPageTest extends StatelessWidget {
           ),
         ),
       ),
+
+      // The Main Body. Displays the Graphs
       body: Column(
         children: [
           for (int i = 0; i < data.length; i++)

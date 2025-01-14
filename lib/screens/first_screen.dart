@@ -58,7 +58,7 @@ class HomeScreenState extends State<HomeScreen> {
               },
             );
            },
-            style: ElevatedButton.styleFrom(
+            style: ElevatedButton.styleFrom( // Formatting
                    backgroundColor: AppColors.paleYellow,
                    foregroundColor: Colors.black,
                     textStyle: const TextStyle(fontSize: 20),
@@ -86,7 +86,7 @@ class HomeScreenState extends State<HomeScreen> {
               },
             );
           }, 
-          style: ElevatedButton.styleFrom(
+          style: ElevatedButton.styleFrom( // Formatting
                       backgroundColor: AppColors.paleYellow,
                       foregroundColor: Colors.black,
                       textStyle: const TextStyle(fontSize: 20),
@@ -178,7 +178,7 @@ class HomeScreenState extends State<HomeScreen> {
               return;
             }
           }, 
-          style: ElevatedButton.styleFrom(
+          style: ElevatedButton.styleFrom( // Formatting
                       backgroundColor: AppColors.palePink,
                       foregroundColor: Colors.black,
                       textStyle: const TextStyle(fontSize: 20),

@@ -17,6 +17,7 @@ class LivePlotPage extends StatelessWidget {
     final appState = context.read<AppStateProvider>();
     final channelNames = appState.channelNames;
 
+    // Formatting //
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60.0),
@@ -54,15 +55,15 @@ class LivePlotPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => const HomeScreen()),
                   );
-                },
-                style: TextButton.styleFrom(
+                }, // Button for Static Plots
+                style: TextButton.styleFrom( // Button Format
                   backgroundColor: AppColors.palePink, 
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0), 
                     side: BorderSide(color: AppColors.darkPink, width: 1.5), 
                   ),
                 ),
-                child: const Text('Make plots static', style: TextStyle(color: Colors.black, fontSize: 15.0)),
+                child: const Text('Make Plots Static', style: TextStyle(color: Colors.black, fontSize: 15.0)),
               ),
               IconButton(
                 icon: const Icon(Icons.home, color: Colors.white, size: 50),
@@ -81,6 +82,8 @@ class LivePlotPage extends StatelessWidget {
           ),
         ),
       ),
+
+      // The Main Body. Displays the Graphs
       body: Column(
         children: [
           for (int i = 0; i < channelNames.length; i++)
@@ -102,6 +105,7 @@ class LivePlotPage extends StatelessWidget {
   }
 }
 
+// Random Color Generator for Channels other than Glucose (green) or Lactate (Red)
 Color generateRandomColor() {
   final random = Random();
   return Color.fromARGB(255, random.nextInt(255), random.nextInt(255), random.nextInt(255));

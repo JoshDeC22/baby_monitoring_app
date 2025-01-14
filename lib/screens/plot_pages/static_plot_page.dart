@@ -19,6 +19,7 @@ class StaticPlotPage extends StatelessWidget {
     final data = appState.staticData;
     final names = appState.channelNames;
 
+    // Formatting // 
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0), 
@@ -58,7 +59,7 @@ class StaticPlotPage extends StatelessWidget {
                     (Route<dynamic> route) => false, // Clear all previous routes
                   );
                 },
-                style: TextButton.styleFrom(
+                style: TextButton.styleFrom( // Button Format
                   backgroundColor: AppColors.palePink, 
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0), 
@@ -84,6 +85,8 @@ class StaticPlotPage extends StatelessWidget {
           ),
         ),
       ),
+
+      // The Main Body. Displays the Graphs
       body: Column(
         children: [
           for (int i = 0; i < data.length; i++)
@@ -105,6 +108,7 @@ class StaticPlotPage extends StatelessWidget {
   }
 }
 
+// Random Color Generator for Channels other than Glucose (green) or Lactate (Red)
 Color generateRandomColor() {
   final random = Random();
   return Color.fromARGB(255, random.nextInt(255), random.nextInt(255), random.nextInt(255));

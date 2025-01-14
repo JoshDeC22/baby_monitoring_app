@@ -80,11 +80,11 @@ class _BluetoothLEDeviceState extends State<BluetoothLEDevicePage> {
       body: ListView(
         children: [
           if (_results.isEmpty)
-            const Center(child: Text("No devices found."))
+            const Center(child: Text("No devices found.")) // Display "No devices found." if the scan yields no results
           else
             for (var result in _results)
               ListTile(
-                title: Text(result.device.platformName.isEmpty ? "Unknown Device" : result.device.platformName),
+                title: Text(result.device.platformName.isEmpty ? "Unknown Device" : result.device.platformName), // Display all devices names found. (Unknown Device if Device has no name)
                 subtitle: Text(result.device.remoteId.toString()),
                 onTap: () { // when one of the devices is tapped, wrap that device in the BluetoothLEWrapper and add it to the app state
                   BluetoothLEWrapper device = BluetoothLEWrapper(result.device, context);

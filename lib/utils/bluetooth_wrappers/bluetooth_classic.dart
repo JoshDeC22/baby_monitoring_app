@@ -38,7 +38,8 @@ class BtClassicWrapper implements BluetoothWrapper {
   Future<void> _readData() async {
     try {
       _conn!.input!.listen((data) {
-        _dataHandler.process(bytes: data);
+         // Sends the data (bytes) to the DataHandler to be processed into u16.
+        _dataHandler.process(bytes: data); // DataHandler will also save the values into a CSV file
       });
     }
     catch (e) {
