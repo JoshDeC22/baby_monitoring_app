@@ -46,42 +46,36 @@ class ChannelPopupState extends State<ChannelPopup> {
 
   // This function prompts the user to select a directory and set a filename for the csv files where the data
   // from the bluetooth devices will be stored
-  void _getPath() {
+  Future<void> _getPath() async {
     // get the directory and filename
-    _getDir();
-    _getFilename();
+    final dir = await _getDir();
+    if (dir != null) {
+      setState(() {
+        _dir = dir;
+      });
+    }
 
-    // check to make sure user has selected a directory/filename
-    if (_dir == null || _filename == null) {
-      // clear the app state and navigate back to the home screen
-      // final appState = context.read<AppStateProvider>();
-      // appState.clearAppState();
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const HomeScreen()),
-      // );
+    final filename = await _getFilename();
+    if (filename != null) {
+      setState(() {
+        _filename = "$filename.csv";
+      });
     }
   }
 
   // This function prompts the user to select a directory to store the csv files where the data from the
   // bluetooth devices will be saved
-  void _getDir() {
+  Future<String?> _getDir() async {
     // get the user to select a directory
-    FilePicker.platform.getDirectoryPath().then((dir) {
-      if (dir != null) {
-        setState(() {
-          _dir = dir;
-        });
-      }
-    });
+    return await FilePicker.platform.getDirectoryPath();
   }
 
   // This function prompts the user to type a file name for the csv files where the data from the
   // bluetooth devices will be saved
-  void _getFilename() {
+  Future<String?> _getFilename() async {
     // Get the user to enter a filename
     TextEditingController controller = TextEditingController();
-    showDialog<String>(
+    return await showDialog<String>(
         context: context,
         builder: (BuildContext context) {
           // Use an AlertDialog
@@ -108,12 +102,8 @@ class ChannelPopupState extends State<ChannelPopup> {
                   onPressed: () {
                     // update the filename if the user has entered text
                     if (controller.text.isNotEmpty) {
-                      setState(() {
-                        _filename = "${controller.text}.csv";
-                      });
+                      Navigator.of(context).pop(controller.text);
                     }
-
-                    Navigator.of(context).pop(); // close the popup
                   },
                   child: Text("Save")),
             ],
@@ -190,14 +180,14 @@ class ChannelPopupState extends State<ChannelPopup> {
                   ),
                   // Create the button to close the popup
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // update the app state and add the new channel list
                       final appState = context.read<AppStateProvider>();
                       appState.setChannelNames(_channelNames);
 
                       // show the popup to get the directory and set the filename for csv files where the
                       // data from the bluetooth device will be stored and then create the data handler
-                      _getPath();
+                      await _getPath();
 
                       // get the number of channels and create a list of stream sinks for each
                       int numChannels = _channelNames.length;
