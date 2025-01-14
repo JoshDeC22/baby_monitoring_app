@@ -62,20 +62,36 @@ class GraphWidgetState extends State<GraphWidget> {
     );
 
     // Create the x axis for the plot as an axis of DateTimes
-    _xAxis = DateTimeAxis(
-      title: const AxisTitle(text: 'Time of Day'), // axis title
-      enableAutoIntervalOnZooming: true, // updates the axis when zooming
-      edgeLabelPlacement: EdgeLabelPlacement
-          .shift, //prevents time labels at edges from being cut off
-      initialVisibleMinimum: widget.data.last.time.subtract(const Duration(
-          minutes: 5)), // Intially show post recent 5 minutes of data
-      initialVisibleMaximum:
-          widget.data.last.time, // Initially show the last data point
-      // initialize the controller for this axis
-      onRendererCreated: (DateTimeAxisController controller) {
-        axisController = controller;
-      },
-    );
+    if (widget.data.isNotEmpty) {
+      _xAxis = DateTimeAxis(
+        title: const AxisTitle(text: 'Time of Day'), // axis title
+        enableAutoIntervalOnZooming: true, // updates the axis when zooming
+        edgeLabelPlacement: EdgeLabelPlacement
+            .shift, //prevents time labels at edges from being cut off
+        initialVisibleMinimum: widget.data.last.time.subtract(const Duration(
+            minutes: 5)), // Intially show post recent 5 minutes of data
+        initialVisibleMaximum:
+            widget.data.last.time, // Initially show the last data point
+        // initialize the controller for this axis
+        onRendererCreated: (DateTimeAxisController controller) {
+          axisController = controller;
+        },
+      );
+    } else {
+      _xAxis = DateTimeAxis(
+        title: const AxisTitle(text: 'Time of Day'), // axis title
+        enableAutoIntervalOnZooming: true, // updates the axis when zooming
+        edgeLabelPlacement: EdgeLabelPlacement
+            .shift, //prevents time labels at edges from being cut off
+        initialVisibleMinimum:
+            DateTime.now(), // Intially show the first five minutes of data
+        initialVisibleMaximum: DateTime.now().add(Duration(minutes: 5)),
+        // initialize the controller for this axis
+        onRendererCreated: (DateTimeAxisController controller) {
+          axisController = controller;
+        },
+      );
+    }
 
     // Initialize data stream, if static plotting, set the data stream to null
     if (widget.plotType != 's') {
@@ -252,21 +268,37 @@ class ExpandedGraphPageState extends State<ExpandedGraphPage> {
       zoomMode: ZoomMode.x, // Allow horizontal scrolling only
     );
 
-    // Initialize the x axis for the plot as a DateTimeAxis
-    _xAxis = DateTimeAxis(
-      title: const AxisTitle(text: 'Time of Day'), // axis title
-      enableAutoIntervalOnZooming: true, // changes the axis labels when zooming
-      edgeLabelPlacement: EdgeLabelPlacement
-          .shift, //prevents time labels at edges from being cut off
-      initialVisibleMinimum: widget.data.last.time.subtract(const Duration(
-          minutes: 5)), // Intially show post recent 5 minutes of data
-      initialVisibleMaximum: widget.data.last
-          .time, // Initially make the visible maximum the last data point
-      // Initialize the axis controller
-      onRendererCreated: (DateTimeAxisController controller) {
-        _axisController = controller;
-      },
-    );
+    // Create the x axis for the plot as an axis of DateTimes
+    if (widget.data.isNotEmpty) {
+      _xAxis = DateTimeAxis(
+        title: const AxisTitle(text: 'Time of Day'), // axis title
+        enableAutoIntervalOnZooming: true, // updates the axis when zooming
+        edgeLabelPlacement: EdgeLabelPlacement
+            .shift, //prevents time labels at edges from being cut off
+        initialVisibleMinimum: widget.data.last.time.subtract(const Duration(
+            minutes: 5)), // Intially show post recent 5 minutes of data
+        initialVisibleMaximum:
+            widget.data.last.time, // Initially show the last data point
+        // initialize the controller for this axis
+        onRendererCreated: (DateTimeAxisController controller) {
+          _axisController = controller;
+        },
+      );
+    } else {
+      _xAxis = DateTimeAxis(
+        title: const AxisTitle(text: 'Time of Day'), // axis title
+        enableAutoIntervalOnZooming: true, // updates the axis when zooming
+        edgeLabelPlacement: EdgeLabelPlacement
+            .shift, //prevents time labels at edges from being cut off
+        initialVisibleMinimum:
+            DateTime.now(), // Intially show the first five minutes of data
+        initialVisibleMaximum: DateTime.now().add(Duration(minutes: 5)),
+        // initialize the controller for this axis
+        onRendererCreated: (DateTimeAxisController controller) {
+          _axisController = controller;
+        },
+      );
+    }
   }
 
   // Build the widgets contained within the ExpandedGraphPage
@@ -443,36 +475,21 @@ Widget _createPlot(
                 child: Container(
                   padding:
                       const EdgeInsets.all(16.0), // Padding inside the card
-                  //height: 400, // fix
+                  height: 600, // fix
                   child: plotWidget,
                 ))));
   } else {
-    return SafeArea(
-        child: Padding(
-            padding: const EdgeInsets.all(
-                16.0), // Adds space/padding around the card
-            child: Card(
-                elevation: 10, // Adds a shadow around the card
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12), // Rounded corners
-                ),
-                child: Container(
-                  padding:
-                      const EdgeInsets.all(16.0), // Padding inside the card
-                  //height: 400, // fix
-                  child: StreamBuilder<int>(
-                      stream: dataStream!, // set the data stream
-                      builder: (context, snap) {
-                        // whenever data is sent from rust, add it to the data list and return the plotWidget
-                        if (snap.hasData) {
-                          final y = snap.data!;
-                          final x = DateTime.now();
-                          data.add(ChartData(x, y));
-                        }
-
-                        return plotWidget;
-                      }),
-                ))));
+    return StreamBuilder<int>(
+        stream: dataStream!, // set the data stream
+        builder: (context, snap) {
+          // whenever data is sent from rust, add it to the data list and return the plotWidget
+          if (snap.hasData) {
+            final y = snap.data!;
+            final x = DateTime.now();
+            data.add(ChartData(x, y));
+          }
+          return plotWidget;
+        });
   }
 }
 

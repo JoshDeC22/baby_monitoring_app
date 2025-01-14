@@ -15,9 +15,6 @@ import 'package:provider/provider.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-
-  
-
   // Since this is a stateful widget, the state is initialized here
   @override
   HomeScreenState createState() => HomeScreenState();

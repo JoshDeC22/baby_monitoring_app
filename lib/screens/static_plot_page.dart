@@ -1,6 +1,7 @@
 // live_plot_page.dart
 import 'dart:math';
 
+import 'package:baby_monitoring_app/screens/first_screen.dart'; // Import the home screen
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import '../widgets/graph.dart';
 
 class StaticPlotPage extends StatelessWidget {
   const StaticPlotPage({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +40,21 @@ class StaticPlotPage extends StatelessWidget {
             ),
             backgroundColor: AppColors.darkBlue, 
             centerTitle: true,
+            leading: IconButton( // Added back button to AppBar
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context); // Navigates back to the previous page
+              },
+            ),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  // TODO: navigate back to home
+                  // Navigate back to the home screen
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    (Route<dynamic> route) => false, // Clear all previous routes
+                  );
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.palePink, 
@@ -56,9 +67,13 @@ class StaticPlotPage extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_drop_down, color: Colors.white, size: 50),
-                onPressed: () => {
-                  // TODO: navigate back to home
-                }
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    (Route<dynamic> route) => false, // Clear all previous routes
+                  );
+                },
               ),
             ],
           ),
@@ -84,7 +99,6 @@ class StaticPlotPage extends StatelessWidget {
     );
   }
 }
-
 
 Color generateRandomColor() {
   final random = Random();
