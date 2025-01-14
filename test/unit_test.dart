@@ -1,11 +1,19 @@
+import 'dart:io';
+import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
+import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/widgets/comment_popup.dart';
 import 'package:baby_monitoring_app/utils/data_model.dart';
 import 'package:baby_monitoring_app/widgets/graph.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:baby_monitoring_app/src/rust/frb_generated.dart';
 
-main() {
+main() async {
+  await RustLib.init();
+
   // Dummy Data
   DateTime dummyTime = DateTime.parse('2025-01-01 11:00:00'); // Year/Month/Day
   final List<ChartData> dummyData = [
@@ -35,7 +43,8 @@ main() {
                 data: dummyData,
                 paramName: 'glucose',
                 lineColor: Colors.green,
-                plotType: 's'),
+                plotType: 's',
+                commentData: []),
           ),
         ),
       );
@@ -61,7 +70,8 @@ main() {
                 data: dummyData,
                 paramName: 'glucose',
                 lineColor: Colors.green,
-                plotType: 's'),
+                plotType: 's',
+                commentData: []),
           ),
         ),
       );
@@ -102,7 +112,8 @@ main() {
                 data: dummyData,
                 paramName: 'glucose',
                 lineColor: Colors.green,
-                plotType: 's'),
+                plotType: 's',
+                commentData: []),
           ),
         ),
       );
@@ -136,7 +147,7 @@ main() {
       await touch1.moveBy(const Offset(-15, 0));
       await touch2.moveBy(const Offset(15, 0));
       await tester.pumpAndSettle();
-      
+
       // Get Current Visible Axis
       DateTime currVisibleMaximum = axisController.visibleMaximum as DateTime;
       DateTime currVisibleMinimum = axisController.visibleMinimum as DateTime;
@@ -153,32 +164,33 @@ main() {
       // Get Current Visible Axis
       currVisibleMaximum = axisController.visibleMaximum as DateTime;
       currVisibleMinimum = axisController.visibleMinimum as DateTime;
-      
+
       // Current Zoom Should be bigger once Zoomed Out
-      expect(currVisibleMaximum.difference(currVisibleMinimum), greaterThan(zoom));
+      expect(
+          currVisibleMaximum.difference(currVisibleMinimum), greaterThan(zoom));
 
       // End Gestures
       await touch1.cancel();
       await touch2.cancel();
-
     });
 
     // Comment Test
     testWidgets("Graph Should be Able to be Commented",
         (WidgetTester tester) async {
-      // Create a Test GraphItem Widget
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GraphWidget(
-                number: 1,
-                data: dummyData,
-                paramName: 'lactate',
-                lineColor: Colors.red,
-                plotType: 's'),
-          ),
-        ),
-      );
+      // Create a Test GraphWidget
+      await tester.pumpWidget(ChangeNotifierProvider(
+          create: (context) => AppStateProvider(),
+          child: MaterialApp(
+            home: Scaffold(
+              body: GraphWidget(
+                  number: 1,
+                  data: dummyData,
+                  paramName: 'lactate',
+                  lineColor: Colors.red,
+                  plotType: 's',
+                  commentData: []),
+            ),
+          )));
 
       // Wait for the Chart to Properly Initiallize and Find the Coordinates of the Chart
       await tester.pumpAndSettle();
@@ -215,5 +227,39 @@ main() {
       // Check Created Comment
       expect(find.text('Dummy Comment'), findsOneWidget);
     });
+  });
+
+  test("Testing DataHandler Class", () async {
+    String dir = Directory.current.path;
+    String filename = 'dummyDataCSV';
+    List<String> channelNames = ["Glucose".toString(), "Lactate".toString()];
+    int numChannels = 2;
+    List<RustStreamSink<int>> streamSinks =
+        List.filled(numChannels, RustStreamSink<int>());
+
+    DataHandler dataHandler = DataHandler(
+        streamSinks: streamSinks,
+        numChannels: numChannels,
+        dir: dir,
+        filename: filename,
+        isStatic: false,
+        channelNames: channelNames);
+
+      expect(dataHandler.error, false);
+
+    for (int i = 0; i < 10; i++) {
+      dataHandler.process(bytes: [0x00, 0x01, 0x00, 0x02]);
+      sleep(Duration(milliseconds: 200));
+    }
+
+    int streamValue1 = await streamSinks[0].stream.first;
+
+    expect(streamValue1, 10);
+
+    File file = File("$dir/${filename}_1.csv");
+
+    if (await file.exists()) {
+      await file.delete();
+    }
   });
 }

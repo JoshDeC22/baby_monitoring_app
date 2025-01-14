@@ -39,8 +39,7 @@ class GraphWidgetState extends State<GraphWidget> {
   late TooltipBehavior _tooltipBehavior; // controller for interacting with plot
   late DateTimeAxis
       _xAxis; // the x axis here is created when the state is created since it will be the same for any type of plot
-  late Stream<int>?
-      dataStream; // if the plot is live this is the data source
+  late Stream<int>? dataStream; // if the plot is live this is the data source
   late DateTimeAxisController
       axisController; // controller to retrieve information about the x axis
   // This value notifier allows for the chart to dynamically update when annotations are added
@@ -84,7 +83,8 @@ class GraphWidgetState extends State<GraphWidget> {
         enableAutoIntervalOnZooming: true, // updates the axis when zooming
         edgeLabelPlacement: EdgeLabelPlacement
             .shift, //prevents time labels at edges from being cut off
-        initialVisibleMinimum: DateTime.now(), // Intially show the first five minutes of data 
+        initialVisibleMinimum:
+            DateTime.now(), // Intially show the first five minutes of data
         initialVisibleMaximum: DateTime.now().add(Duration(minutes: 5)),
         // initialize the controller for this axis
         onRendererCreated: (DateTimeAxisController controller) {
@@ -111,16 +111,15 @@ class GraphWidgetState extends State<GraphWidget> {
       final annotation = CartesianChartAnnotation(
         // Create the outline of the annotation
         widget: Container(
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          // Set the text inside the annotation to the text within the text field
-          child: Text(
-            commentString,
-          )
-        ),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            // Set the text inside the annotation to the text within the text field
+            child: Text(
+              commentString,
+            )),
         coordinateUnit: CoordinateUnit.point,
         x: time,
         y: bitVal,
@@ -291,7 +290,8 @@ class ExpandedGraphPageState extends State<ExpandedGraphPage> {
         enableAutoIntervalOnZooming: true, // updates the axis when zooming
         edgeLabelPlacement: EdgeLabelPlacement
             .shift, //prevents time labels at edges from being cut off
-        initialVisibleMinimum: DateTime.now(), // Intially show the first five minutes of data 
+        initialVisibleMinimum:
+            DateTime.now(), // Intially show the first five minutes of data
         initialVisibleMaximum: DateTime.now().add(Duration(minutes: 5)),
         // initialize the controller for this axis
         onRendererCreated: (DateTimeAxisController controller) {
@@ -485,16 +485,16 @@ Widget _createPlot(
     );
   } else {
     return StreamBuilder<int>(
-      stream: dataStream!, // set the data stream
-      builder: (context, snap) {
-        // whenever data is sent from rust, add it to the data list and return the plotWidget
-        if (snap.hasData) {
-          final y = snap.data!;
-          final x = DateTime.now();
-          data.add(ChartData(x, y));
-        }
-        return plotWidget;
-      });
+        stream: dataStream!, // set the data stream
+        builder: (context, snap) {
+          // whenever data is sent from rust, add it to the data list and return the plotWidget
+          if (snap.hasData) {
+            final y = snap.data!;
+            final x = DateTime.now();
+            data.add(ChartData(x, y));
+          }
+          return plotWidget;
+        });
   }
 }
 
