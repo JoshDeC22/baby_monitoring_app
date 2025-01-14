@@ -205,6 +205,9 @@ class ChannelPopupState extends State<ChannelPopup> {
                       appState.setDataHandler(dataHandler);
                       appState.setDataStreams(streamSinks);
 
+                      // close the popup
+                      Navigator.of(context).pop();
+
                       // Navigate to either the bluetooth classic or LE device list
                       if (widget.bluetoothClassic) {
                         // Navigate to bluetooth classic device list
@@ -220,9 +223,6 @@ class ChannelPopupState extends State<ChannelPopup> {
                             MaterialPageRoute(
                                 builder: (context) => BluetoothLEDevicePage()));
                       }
-
-                      // close the popup
-                      Navigator.of(context, rootNavigator: true).pop();
                     },
                     child: Text("Close"),
                   )
