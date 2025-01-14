@@ -30,7 +30,7 @@ cd baby_monitoring_app
 ```shell
 flutter pub get
 ``` 
-3.set up flutter rust bridge
+3. Set up flutter rust bridge
 ```shell
 cargo install flutter_rust_bridge_codegen
 flutter_rust_bridge_codegen generate
