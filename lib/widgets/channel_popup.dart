@@ -188,9 +188,6 @@ class ChannelPopupState extends State<ChannelPopup> {
                       final appState = context.read<AppStateProvider>();
                       appState.setChannelNames(_channelNames);
 
-                      // close the popup
-                      Navigator.pop(context);
-
                       // show the popup to get the directory and set the filename for csv files where the
                       // data from the bluetooth device will be stored and then create the data handler
                       _getPath();
@@ -226,6 +223,9 @@ class ChannelPopupState extends State<ChannelPopup> {
                             MaterialPageRoute(
                                 builder: (context) => BluetoothLEDevicePage()));
                       }
+
+                      // close the popup
+                      Navigator.pop(context);
                     },
                     child: Text("Close"),
                   )
