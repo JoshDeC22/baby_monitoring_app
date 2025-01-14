@@ -190,8 +190,6 @@ class ChannelPopupState extends State<ChannelPopup> {
                       // show the popup to get the directory and set the filename for csv files where the
                       // data from the bluetooth device will be stored and then create the data handler
                       await _getPath();
-                      print(_filename);
-                      print(_dir);
 
                       // get the number of channels and create a list of stream sinks for each
                       int numChannels = _channelNames.length;
