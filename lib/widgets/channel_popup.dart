@@ -54,12 +54,12 @@ class ChannelPopupState extends State<ChannelPopup> {
     // check to make sure user has selected a directory/filename
     if (_dir == null || _filename == null) {
       // clear the app state and navigate back to the home screen
-      final appState = context.read<AppStateProvider>();
-      appState.clearAppState();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      // final appState = context.read<AppStateProvider>();
+      // appState.clearAppState();
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const HomeScreen()),
+      // );
     }
   }
 
@@ -232,7 +232,7 @@ class ChannelPopupState extends State<ChannelPopup> {
                       }
 
                       // close the popup
-                      Navigator.pop(context);
+                      Navigator.of(context, rootNavigator: true).pop();
                     },
                     child: Text("Close"),
                   )
