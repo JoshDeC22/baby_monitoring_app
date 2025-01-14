@@ -71,7 +71,7 @@ class AppStateProvider with ChangeNotifier{
     notifyListeners();
   }
 
-  // setter for the data streamsa
+  // setter for the data streams
   void setDataStreams(List<RustStreamSink<int>> dataStreams) {
     _dataStreams = dataStreams;
     notifyListeners();
