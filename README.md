@@ -26,7 +26,7 @@ Flutter Rust Bridge
 clone <repo-url>
 cd baby_monitoring_app
 ```
-3. Install Flutter dependencies
+2. Install Flutter dependencies
 ```shell
 flutter pub get
 ``` 
@@ -35,8 +35,8 @@ flutter pub get
 cargo install flutter_rust_bridge_codegen
 flutter_rust_bridge_codegen generate
 ```
-5. Run android emulator or android device
-6. Run app
+4. Run android emulator or android device
+5. Run app
 ```shell
 flutter run
 ```
