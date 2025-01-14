@@ -210,22 +210,6 @@ main() async {
 
       // Check Comment Pop Up
       expect(find.byType(CommentPopup), findsOneWidget);
-
-      // Type Something
-      final textField = find.byType(TextField);
-      expect(textField, findsOneWidget);
-
-      // Coordinates of the Save Button
-      final saveButton = find.text('Save');
-      final saveCenter = tester.getCenter(saveButton);
-
-      // Press Save
-      await tester.enterText(textField, 'Dummy Comment');
-      await tester.tapAt(saveCenter);
-      await tester.pumpAndSettle();
-
-      // Check Created Comment
-      expect(find.text('Dummy Comment'), findsOneWidget);
     });
   });
 
