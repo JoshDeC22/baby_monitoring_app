@@ -208,7 +208,7 @@ main() async {
       await tester.tapAt(center);
       await tester.pumpAndSettle();
 
-      // Check Comment Pop Up
+      // Check Comment Pop Up Box Appears
       expect(find.byType(CommentPopup), findsOneWidget);
     });
   });
@@ -229,7 +229,7 @@ main() async {
         isStatic: false,
         channelNames: channelNames);
 
-      expect(dataHandler.error, false);
+    expect(dataHandler.error, false);
 
     for (int i = 0; i < 10; i++) {
       dataHandler.process(bytes: [0x00, 0x01, 0x00, 0x02]);
