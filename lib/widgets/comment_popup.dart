@@ -89,6 +89,7 @@ class CommentPopupState extends State<CommentPopup> {
                       widget.annotations.value = [...widget.annotations.value, annotation];
                       // Get the app state and data handler
                       final appState = context.read<AppStateProvider>();
+                      // IMPORTANT: Comment out these 2 lines to add comments to test plot
                       DataHandler dataHandler = appState.dataHandler!;
                       dataHandler.saveCommentsCsv(comment: comment, timestamp: widget.time);
                       // close the popup
