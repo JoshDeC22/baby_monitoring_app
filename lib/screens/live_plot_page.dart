@@ -48,7 +48,9 @@ class LivePlotPage extends StatelessWidget {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  // Navigate to the static plot page
+                  // clear the app state and navigate back to the home screen
+                  final appState = context.read<AppStateProvider>();
+                  appState.clearAppState();
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const StaticPlotPage()),
@@ -66,7 +68,9 @@ class LivePlotPage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.home, color: Colors.white, size: 50),
                 onPressed: () {
-                  // Navigate back to the home page
+                  // clear the app state and navigate back to the home screen
+                  final appState = context.read<AppStateProvider>();
+                  appState.clearAppState();
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const HomeScreen()),

@@ -49,7 +49,9 @@ class StaticPlotPage extends StatelessWidget {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  // Navigate back to the home screen
+                  // clear the app state and navigate back to the home screen
+                  final appState = context.read<AppStateProvider>();
+                  appState.clearAppState();
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -68,6 +70,9 @@ class StaticPlotPage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_drop_down, color: Colors.white, size: 50),
                 onPressed: () {
+                  // clear the app state and navigate back to the home screen
+                  final appState = context.read<AppStateProvider>();
+                  appState.clearAppState();
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const HomeScreen()),

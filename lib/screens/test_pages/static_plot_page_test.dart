@@ -2,19 +2,16 @@ import 'package:flutter/material.dart';
 import '../../widgets/graph.dart';
 import 'package:baby_monitoring_app/utils/data_model.dart';
 import 'package:baby_monitoring_app/utils/comment_data.dart'; // Import CommentData
+import 'package:baby_monitoring_app/utils/colors.dart';
+import 'package:baby_monitoring_app/screens/static_plot_page.dart';
 
 class StaticPlotPageTest extends StatelessWidget {
   const StaticPlotPageTest({super.key});
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
     DateTime dummyTime =
         DateTime.parse('2025-01-01 11:17:00'); // Year/Month/Day
-=======
-    DateTime dummyTime = DateTime.parse('2025-01-01 11:00:00'); 
-
->>>>>>> 6c720ac3936358cfadf484087168265df9b26a9e
     final List<ChartData> dummyData = [
       ChartData(dummyTime, 4),
       ChartData(dummyTime.add(const Duration(minutes: 1)), 5),
@@ -33,7 +30,6 @@ class StaticPlotPageTest extends StatelessWidget {
     final List<CommentData> comments = []; // Initialize comments
 
     return Scaffold(
-<<<<<<< HEAD
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0),
         child: Container(
@@ -78,42 +74,10 @@ class StaticPlotPageTest extends StatelessWidget {
                   onPressed: () => {
                         // TODO: navigate back to home
                       }),
-=======
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Static Blood Parameter Plot (Demo Data)',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (int i = 0; i < data.length; i++)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SizedBox(
-                    height: 500,
-                    child: GraphWidget(
-                      number: i + 1,
-                      data: data[i],
-                      paramName: names[i],
-                      lineColor: i == 0 ? Colors.red : Colors.green,
-                      plotType: 's',
-                      commentData: comments, // Pass comments
-                    ),
-                  ),
-                )
->>>>>>> 6c720ac3936358cfadf484087168265df9b26a9e
             ],
           ),
         ),
       ),
-<<<<<<< HEAD
       body: Column(
         children: [
           for (int i = 0; i < data.length; i++)
@@ -149,8 +113,6 @@ class StaticPlotPageTest extends StatelessWidget {
               )
         ],
       ),
-=======
->>>>>>> 6c720ac3936358cfadf484087168265df9b26a9e
     );
   }
 }
