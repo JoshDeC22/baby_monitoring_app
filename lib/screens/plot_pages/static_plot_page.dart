@@ -1,25 +1,27 @@
 // live_plot_page.dart
 import 'dart:math';
 
-import 'package:baby_monitoring_app/screens/first_screen.dart';
-import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/screens/first_screen.dart'; // Import the home screen
+import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/graph.dart';
+import '../../widgets/graph.dart';
 
-class LivePlotPage extends StatelessWidget {
-  const LivePlotPage({super.key});
+class StaticPlotPage extends StatelessWidget {
+  const StaticPlotPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Get the app state and graph names
+    // Get the app state and static data
     final appState = context.read<AppStateProvider>();
-    final channelNames = appState.channelNames;
+    final comments = appState.staticCommentData;
+    final data = appState.staticData;
+    final names = appState.channelNames;
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60.0),
+        preferredSize: Size.fromHeight(60.0), 
         child: Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -27,21 +29,21 @@ class LivePlotPage extends StatelessWidget {
                 color: Colors.black.withOpacity(0.5), 
                 spreadRadius: 1, 
                 blurRadius: 10, 
-                offset: const Offset(0, 3), 
+                offset: Offset(0, 3), 
               ),
             ],
           ),
           child: AppBar(
             title: const Text(
-              'Real-time Blood Parameter Monitoring',
+              'Static Blood Parameter Monitoring',
               style: TextStyle(color: Colors.white, fontSize: 30.0, fontWeight: FontWeight.bold),
             ),
             backgroundColor: AppColors.darkBlue, 
             centerTitle: true,
-            leading: IconButton( // Added back button for navigating back to home
+            leading: IconButton( // Added back button to AppBar
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                Navigator.pop(context); // Goes back to the previous page
+                Navigator.pop(context); // Navigates back to the previous page
               },
             ),
             actions: <Widget>[
@@ -50,9 +52,10 @@ class LivePlotPage extends StatelessWidget {
                   // clear the app state and navigate back to the home screen
                   final appState = context.read<AppStateProvider>();
                   appState.clearAppState();
-                  Navigator.push(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    (Route<dynamic> route) => false, // Clear all previous routes
                   );
                 },
                 style: TextButton.styleFrom(
@@ -62,10 +65,10 @@ class LivePlotPage extends StatelessWidget {
                     side: BorderSide(color: AppColors.darkPink, width: 1.5), 
                   ),
                 ),
-                child: const Text('Make plots static', style: TextStyle(color: Colors.black, fontSize: 15.0)),
+                child: const Text('Go Home', style: TextStyle(color: Colors.black, fontSize: 15.0)),
               ),
               IconButton(
-                icon: const Icon(Icons.home, color: Colors.white, size: 50),
+                icon: const Icon(Icons.arrow_drop_down, color: Colors.white, size: 50),
                 onPressed: () {
                   // clear the app state and navigate back to the home screen
                   final appState = context.read<AppStateProvider>();
@@ -73,7 +76,7 @@ class LivePlotPage extends StatelessWidget {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    (Route<dynamic> route) => false, // Clears the navigation stack
+                    (Route<dynamic> route) => false, // Clear all previous routes
                   );
                 },
               ),
@@ -83,18 +86,18 @@ class LivePlotPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          for (int i = 0; i < channelNames.length; i++)
+          for (int i = 0; i < data.length; i++)
             if (i == 0) 
               Flexible(
-                child: GraphWidget(number: 1, data: [], paramName: channelNames[i], lineColor: Colors.red, plotType: 's', commentData: []),
+                child: GraphWidget(number: 1, data: data[i], paramName: names[i], lineColor: Colors.red, plotType: 's', commentData: comments),
               )
             else if (i == 1)
               Flexible(
-                child: GraphWidget(number: 1, data: [], paramName: channelNames[i], lineColor: Colors.green, plotType: 's', commentData: []),
+                child: GraphWidget(number: 1, data: data[i], paramName: names[i], lineColor: Colors.green, plotType: 's', commentData: comments),
               )
             else
               Flexible(
-                child: GraphWidget(number: i + 1, data: [], paramName: channelNames[i], lineColor: generateRandomColor(), plotType: 's', commentData: []),
+                child: GraphWidget(number: i + 1, data: data[i], paramName: names[i], lineColor: generateRandomColor(), plotType: 's', commentData: comments),
               )
         ],
       ),

@@ -1,6 +1,6 @@
-import 'package:baby_monitoring_app/screens/static_plot_page.dart';
+import 'package:baby_monitoring_app/screens/plot_pages/static_plot_page.dart';
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
-import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:baby_monitoring_app/widgets/channel_popup.dart';
 import 'package:file_picker/file_picker.dart';

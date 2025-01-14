@@ -2,7 +2,7 @@ import 'package:baby_monitoring_app/screens/first_screen.dart';
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
 import 'package:baby_monitoring_app/screens/bluetooth_device_list/bluetooth_classic_device_list.dart';
 import 'package:baby_monitoring_app/screens/bluetooth_device_list/bluetooth_le_device_list.dart';
-import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';

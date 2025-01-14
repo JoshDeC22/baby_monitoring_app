@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
-import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
 import 'package:baby_monitoring_app/widgets/comment_popup.dart';
-import 'package:baby_monitoring_app/utils/data_model.dart';
+import 'package:baby_monitoring_app/utils/data_wrappers/data_model.dart';
 import 'package:baby_monitoring_app/widgets/graph.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

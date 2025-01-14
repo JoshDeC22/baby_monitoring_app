@@ -1,5 +1,5 @@
 import 'package:baby_monitoring_app/src/rust/api/data_handler.dart';
-import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';

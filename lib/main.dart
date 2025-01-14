@@ -1,6 +1,6 @@
 import 'package:baby_monitoring_app/screens/first_screen.dart';
 import 'package:baby_monitoring_app/screens/test_pages/static_plot_page_test.dart';
-import 'package:baby_monitoring_app/utils/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:baby_monitoring_app/src/rust/frb_generated.dart';
 import 'package:provider/provider.dart';

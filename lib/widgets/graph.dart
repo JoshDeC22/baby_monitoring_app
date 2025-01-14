@@ -1,6 +1,6 @@
-import 'package:baby_monitoring_app/utils/app_state_provider.dart';
-import 'package:baby_monitoring_app/utils/comment_data.dart';
-import 'package:baby_monitoring_app/utils/data_model.dart';
+import 'package:baby_monitoring_app/utils/state_management/app_state_provider.dart';
+import 'package:baby_monitoring_app/utils/data_wrappers/comment_data.dart';
+import 'package:baby_monitoring_app/utils/data_wrappers/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:provider/provider.dart';
