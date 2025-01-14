@@ -4,9 +4,6 @@ import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:baby_monitoring_app/src/rust/frb_generated.dart';
 import 'package:provider/provider.dart';
-import 'widgets/graph_widget.dart';
-import 'blood_data.dart';
-import '../utils/csv_reader.dart'; // Import the CSV loader
 
 Future<void> main() async {
   await RustLib.init();
@@ -27,11 +24,12 @@ class MyApp extends StatelessWidget {
         //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const GraphScren(), //screneing for displaying graphs
+      home: StaticPlotPageTest(), //screen for selecting what to display (switch this to static plot page test to see what the plots look like)
     );
   }
 }
 
+/*
 // Screen displaying the graphs
 class GraphScreen extends StatefulWidget {
   const GraphScreen({super.key});
@@ -138,3 +136,4 @@ class _GraphScreenState extends State<GraphScreen> {
     );
   }
 }
+*/

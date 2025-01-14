@@ -21,7 +21,6 @@ class StaticPlotPageTest extends StatelessWidget {
       ChartData(dummyTime.add(const Duration(minutes: 7)), 2),
       ChartData(dummyTime.add(const Duration(minutes: 8)), 4),
       ChartData(dummyTime.add(const Duration(minutes: 9)), 6),
-      ChartData(dummyTime.add(const Duration(hours: 1)), 3),
     ];
 
     final data = [dummyData, dummyData]; 

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:baby_monitoring_app/screens/first_screen.dart';
+import 'package:baby_monitoring_app/screens/live_plot_page.dart';
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/bluetooth_le.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ import 'package:provider/provider.dart';
 // This is the class that when instantiated scans for bluetooth low energy devices and lists any that are found.
 // Since this is a StatefulWidget, any changes to the _results field in the state class will result in a UI update.
 class BluetoothLEDevicePage extends StatefulWidget {
-  const BluetoothLEDevicePage({Key? key}) : super(key: key); // Stateful widget constructor
+  const BluetoothLEDevicePage({super.key}); // Stateful widget constructor
 
   @override
   State<BluetoothLEDevicePage> createState() => _BluetoothLEDeviceState(); // Creates the state of this widget
@@ -47,7 +49,16 @@ class _BluetoothLEDeviceState extends State<BluetoothLEDevicePage> {
       });
     }
     catch (e) {
-      print(e); // Implelment error handling later
+      // Clear app state
+      final appState = context.read<AppStateProvider>();
+      appState.clearAppState();
+
+      // Navigate back to the home page
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        (Route<dynamic> route) => false, // Clears the navigation stack
+      );
     }
   }
 
@@ -81,7 +92,11 @@ class _BluetoothLEDeviceState extends State<BluetoothLEDevicePage> {
                   final appState = Provider.of<AppStateProvider>(context);
                   appState.setBluetoothDevice(device);
 
-                  // TODO: go to live plot page
+                  // Navigate to the live plot page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LivePlotPage())
+                  );
                 },
               )
         ],

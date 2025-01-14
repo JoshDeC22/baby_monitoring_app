@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:baby_monitoring_app/screens/first_screen.dart';
+import 'package:baby_monitoring_app/screens/live_plot_page.dart';
 import 'package:baby_monitoring_app/utils/app_state_provider.dart';
 import 'package:baby_monitoring_app/utils/bluetooth_classic.dart';
-import 'package:baby_monitoring_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_classic/flutter_blue_classic.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +60,16 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
       });
     }
     catch (e) {
-      print(e);
+      // Clear app state
+      final appState = context.read<AppStateProvider>();
+      appState.clearAppState();
+
+      // Navigate back to the home page
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        (Route<dynamic> route) => false, // Clears the navigation stack
+      );
     }
 
     if (!mounted) return;
@@ -99,6 +109,12 @@ class _BluetoothClassicListState extends State<BluetoothClassicListPage> {
                 // Get the app state and add the device
                 final appState = Provider.of<AppStateProvider>(context);
                 appState.setBluetoothDevice(device);
+
+                // Navigate to the live plot page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LivePlotPage())
+                );
               },
             ),
             const Padding(

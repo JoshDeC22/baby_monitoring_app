@@ -52,7 +52,7 @@ class StaticPlotPage extends StatelessWidget {
                   // Navigate back to the home screen
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => const FirstScreen()),
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
                     (Route<dynamic> route) => false, // Clear all previous routes
                   );
                 },
@@ -70,7 +70,7 @@ class StaticPlotPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => const FirstScreen()),
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
                     (Route<dynamic> route) => false, // Clear all previous routes
                   );
                 },
